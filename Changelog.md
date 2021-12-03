@@ -1,5 +1,48 @@
 # Changelog
 
+### 1.13.0
+
+_Changes:_
+
+- [X] PDO-3064 PingAccess hook scripts updated to use the beluga_log method instead of echo
+
+### 1.12.0
+
+- Added custom patch to create public ingresses for admin endpoints
+- Heartbeat endpoint page template changed
+- Add support for enabling rate limiting in PA and PA-WAS
+- Added regional custom-patches.yaml as an extension point to customize configuration for a specific region 
+- Updated ingress to v1.0.0 and added the SigSci agent sidecar container to the public Nginx-ingress-controller pod
+- Add multiline log support for PA-WAS
+- Implemented Kubernetes Infrastructure Agent for New Relic
+- Updated argocd to latest release: v2.1.6
+- Add sideband fields to PA logs
+- Force StatefulSets (PF-admin, PA-admin, PA-was-admin, PD) to use non-root user
+
+_Changes:_
+
+- [X] PDO-1350 PingAccess proactively remove temp file that causes upgrade to fail
+- [X] PDO-2223 Heartbeat endpoint page template changing
+- [X] PDO-1676 Deploy Kubernetes Infrastructure Agent for New Relic
+- [X] PDO-2410 PA-WAS: parse multiline logs
+- [X] PDO-2432 Update cluster tools to latest version: argocd to v2.1.6
+- [X] PDO-2534 SigSci WAF: run the SigSci agent as a sidecar container in the Nginx-ingress-controller pod
+- [X] PDO-2921 SigSci WAF: create public ingresses for admin endpoints
+- [X] PDO-2928 Add support for enabling rate limiting in PA and PA-WAS
+- [X] PDO-2938 Added regional custom-patches.yaml as an extension point to customize configuration for a specific region
+- [X] PDO-2962 Added new PA sideband logs to SIEM Integration
+- [X] PDO-2965 Refactor NewRelic APM agents to use Secret located in 'newrelic' namespace
+- [X] PDO-2988 Increased metadata pod timeoutSeconds probe to 3 seconds for liveness & readiness
+- [X] PDO-2991 SigSci WAF: Update SigSci sidecar resource limit & requests
+- [X] PDO-3058 CSD upload file changed from .zip-zip format to .zip
+- [X] PDO-3092 Force all jobs and cronjobs of Ping products to use non-root
+- [X] PDO-3091 Fixed role association on gateway objects created in P14C and PF authentication policy issue for MyPing E2E flow
+- [X] PDO-3102 Fix offline replication configuration error when config.ldif has line wrappings
+- [X] PDO-3103 Force StatefulSets (PF-admin, PA-admin, PA-was-admin, PD) to use non-root user
+- [X] PDO-3109 Fix code generation script to only use the SSH-RSA host keys for GitHub
+- [X] PDO-3110 Make code generation script more resilient to invalid values for IS_GA and IS_MY_PING SSM parameters 
+- [X] PDO-3137 Support SSO for multiple PA admin applications per environment
+
 ### 1.11.0
 
 - Enabled PingAccess Admin SSO for MyPing customers
@@ -22,7 +65,9 @@
 - Support PA database changed from H2 to Apache Derby
 - Updated starter configuration to use LE production server for all GA and MyPing customers
 - Fixed Pod startup errors due to Prometheus not being able to find jmx_export_config.yaml
-- Added replication backlog check to PD readiness check
+- Added PD startupProbe with replication backlog check
+- Update cluster tools to version: cluster-autoscaler (1.20.0)
+- Update kibana index mappings
 
 _Changes:_
 
@@ -52,6 +97,9 @@ _Changes:_
 - [X] PDO-2986 Fixed issue with P14C bootstrap image where k8s resource data for SSM params are deleted on param update
 - [X] PDO-2989 Add the Beluga version to the cluster-state and profile repos in a version.txt file
 - [X] PDO-2990 Pod startup errors due to Prometheus not being able to find jmx_export_config.yaml
+- [X] PDO-3027 Update cluster tools to version: cluster-autoscaler (1.20.0)
+- [X] PDO-3037 Update PF audit Kibana index mapping
+- [X] PDO-3038 Update PA audit Kibana index mapping
 
 ### 1.10.0
 

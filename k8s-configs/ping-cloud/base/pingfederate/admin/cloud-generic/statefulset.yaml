@@ -29,7 +29,11 @@ spec:
       serviceAccount: ping-serviceaccount
       initContainers:
       - name: pingfederate-p14c-init
-        image: public.ecr.aws/r2h3l6e4/pingcloud-services/p14c-integration:v1.0.34
+        securityContext:
+          runAsGroup: 9999
+          runAsNonRoot: true
+          runAsUser: 9031
+        image: public.ecr.aws/r2h3l6e4/pingcloud-services/p14c-integration:v1.0.36
         imagePullPolicy: IfNotPresent
         env:
         - name: NAMESPACE
@@ -43,8 +47,9 @@ spec:
       - name: pingfederate-init
         # FIXME: switch to same user as app
         securityContext:
-          runAsNonRoot: false
-          runAsUser: 0
+          runAsGroup: 9999
+          runAsNonRoot: true
+          runAsUser: 9031
         image: public.ecr.aws/r2h3l6e4/bitnami/kubectl:1.15.3
         imagePullPolicy: IfNotPresent
         command:
@@ -73,7 +78,9 @@ spec:
             name: pingcommon-environment-variables
       - name: newrelic-tags-exporter
         securityContext:
-          runAsNonRoot: false
+          runAsGroup: 9999
+          runAsNonRoot: true
+          runAsUser: 9031
         image: public.ecr.aws/r2h3l6e4/pingcloud-monitoring/newrelic-tags-exporter:v1.0.7
         imagePullPolicy: IfNotPresent
         envFrom:
@@ -102,11 +109,12 @@ spec:
           mountPath: /opt/shared-dir
       - name: wait-for-services
         # FIXME: switch to same user as app
-        securityContext:
-          runAsNonRoot: false
-          runAsUser: 0
         image: public.ecr.aws/r2h3l6e4/busybox:1.32
-        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsGroup: 9999
+          runAsNonRoot: true
+          runAsUser: 9031
+        imagePullPolicy: Always
         command:
         - /wait-for-services.sh
         volumeMounts:
@@ -124,10 +132,10 @@ spec:
       containers:
       - name: pingfederate-admin
         image: public.ecr.aws/r2h3l6e4/pingcloud-apps/pingfederate:10.3.1-v1.0.16
-        # Required because new GSA images run as non-root by default, and P1AS does not work with non-root user yet.
         securityContext:
-          runAsNonRoot: false
-          runAsUser: 0
+          runAsGroup: 9999
+          runAsNonRoot: true
+          runAsUser: 9031
         imagePullPolicy: IfNotPresent
         env:
         - name: OPERATIONAL_MODE
@@ -224,7 +232,9 @@ spec:
           timeoutSeconds: 5
         ports:
         - name: pf-admin
-          containerPort: 443
+          containerPort: 9999
+      securityContext:
+        fsGroup: 9999
       volumes:
       - name: podinfo
         downwardAPI:

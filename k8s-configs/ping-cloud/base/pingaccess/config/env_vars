@@ -2,13 +2,23 @@ ORCHESTRATION_TYPE=kubernetes
 #VERBOSE=true
 SERVER_PROFILE_URL=https://github.com/pingidentity/ping-cloud-base.git
 SERVER_PROFILE_PATH=profiles/aws/pingaccess
-SERVER_PROFILE_BRANCH=v1.11-release-branch
+SERVER_PROFILE_BRANCH=master
 
 REGION=us-west-2
 
 PA_ADMIN_SERVER=pingaccess-admin
 PA_ADMIN_PORT=9000
 PA_ENGINE_PORT=3000
+PA_ADMIN_API_RATE_LIMIT=5000
+
+# Allowed values=space-separated list of a combination of Resource, Identity, IP, OAuthClient
+# No value means default rate limit policies are not enabled
+PA_ADMIN_API_RATE_LIMIT_POLICY=
+
+# Allowed values=space-separated list of a combination of AR, GR, KI, PA, PC, PF, PR, e.g. AR GR KI PR
+# where [AR=Argo CD App; GR=Grafana App; KI=Kibana App; PA=PingAccess App; PC=PingCentral App; PF=PingFederate App; PR=Prometheus App]
+# No value means default rate limit policies are not applied to any application
+PA_ADMIN_APPLICATIONS=
 
 # Retry client request to pingaccess admin API up to 10 times. Engine pod uses admin
 # API to retrieve its proper configuration.
