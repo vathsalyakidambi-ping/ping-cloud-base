@@ -153,7 +153,7 @@ spec:
             runAsGroup: 9999
             runAsNonRoot: true
             runAsUser: 9031
-          image: public.ecr.aws/r2h3l6e4/pingcloud-apps/pingdirectory:8.3.0.0-v1.0.19
+          image: public.ecr.aws/r2h3l6e4/pingcloud-apps/pingdirectory:8.3.0.3-v1.0.23
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 1389
@@ -219,7 +219,7 @@ spec:
           volumeMounts:
             # FIXME: fix home directory when containers run as non-root user
             - name: ssh-dir
-              mountPath: /home/.ssh
+              mountPath: /home/ping/.ssh
             - name: shared-dir
               mountPath: /opt/shared-dir
             - name: topology-descriptor
