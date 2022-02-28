@@ -1,0 +1,43 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: pingfederate-periodic-csd-upload
+spec:
+  schedule: "0 * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccount: ping-serviceaccount
+          restartPolicy: OnFailure
+          containers:
+          - name: pingfederate-periodic-csd-upload
+            image: public.ecr.aws/r2h3l6e4/pingcloud-apps/pingfederate:11.0.1-v1.0.29
+            imagePullPolicy: IfNotPresent
+            securityContext:
+              runAsGroup: 9999
+              runAsNonRoot: true
+              runAsUser: 9031
+            command:
+            - /opt/in/backup-csd-data.sh
+            env:
+            - name: CSD_POD_ROLE
+              value: "pingfederate-engine"
+            - name: CSD_CONTAINER_NAME
+              value: "pingfederate"
+            - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+              value: "true"
+            envFrom:
+            - configMapRef:
+                name: pingfederate-environment-variables
+            volumeMounts:
+            - name: pingfederate-periodic-csd-upload
+              mountPath: /opt/in/backup-csd-data.sh
+              subPath: backup-csd-data.sh
+          volumes:
+          - name: pingfederate-periodic-csd-upload
+            configMap:
+              name: pingfederate-periodic-csd-upload
+              defaultMode: 0555

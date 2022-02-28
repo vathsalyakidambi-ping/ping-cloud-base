@@ -1,0 +1,128 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+- ${K8S_GIT_URL}/k8s-configs/cluster-tools/base/monitoring?ref=${K8S_GIT_BRANCH}
+
+patchesStrategicMerge:
+
+### Cloud-watch logging and monitoring ###
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: cluster-info
+    namespace: amazon-cloudwatch
+  data:
+    cluster.name: ${CLUSTER_NAME}
+    logs.region: ${REGION}
+
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: cwagentconfig
+    namespace: amazon-cloudwatch
+  data:
+    # Configuration is in Json format. No matter what configure change you make,
+    # please keep the Json blob valid.
+    cwagentconfig.json: |
+      {
+        "agent": {
+          "region": "${REGION}"
+        },
+        "logs": {
+          "metrics_collected": {
+            "kubernetes": {
+              "cluster_name": "${CLUSTER_NAME}",
+              "metrics_collection_interval": 60
+            }
+          },
+          "force_flush_interval": 5
+        }
+      }
+
+# NewRelic resources
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: nri-bundle-nri-prometheus-config
+    namespace: newrelic
+  data:
+    config.yaml: |
+      cluster_name: ${NEW_RELIC_ENVIRONMENT_NAME}
+      require_scrape_enabled_label_for_nodes: true
+
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: nri-bundle-nri-kube-events-config
+    namespace: newrelic
+  data:
+    config.yaml: |-
+      sinks:
+      - name: newRelicInfra
+        config:
+          agentEndpoint: http://localhost:8001/v1/data
+          clusterName: ${NEW_RELIC_ENVIRONMENT_NAME}
+          agentHTTPTimeout: 30s
+
+patchesJson6902:
+
+# Newrelic resources
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nri-bundle-nri-metadata-injection
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/clusterName
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nri-bundle-newrelic-metadata
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/CLUSTER_NAME
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: apps
+    version: v1
+    kind: DaemonSet
+    name: nri-bundle-newrelic-infrastructure
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/CLUSTER_NAME
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: apps
+    version: v1
+    kind: DaemonSet
+    name: nri-bundle-newrelic-logging
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/CLUSTER_NAME
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: batch
+    version: v1
+    kind: Job
+    name: newrelic-license-secret-exporter
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/SECRET_NAMESPACE
+      value: ${PING_CLOUD_NAMESPACE}
