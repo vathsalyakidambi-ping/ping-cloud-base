@@ -1,0 +1,284 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+- ../../k8s-configs/cluster-tools
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+# In the "kustomize" overlay for CI/CD environments, manually create the "newrelic-license-key" secret in the "newrelic" namespace instead of using the "newrelic-license-secret-exporter" job to automate it. Otherwise, concurrent branch pipelines can fail because the "newrelic" namespace is shared across all "ping-cloud" branch pipelines and the updating immutable fields in the exporter job can fail.
+
+secretGenerator:
+- name: newrelic-license-key
+  namespace: newrelic
+  literals:
+  - NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}
+
+patchesStrategicMerge:
+
+### Lets encrypt ACME certificate issuer for the cluster ###
+- |-
+  apiVersion: cert-manager.io/v1alpha2
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt-prod
+  spec:
+    acme:
+      server: https://acme-staging-v02.api.letsencrypt.org/directory
+      email: ${CLUSTER_NAME_LC}@${TENANT_DOMAIN}
+      solvers:
+      - dns01:
+          route53:
+            region: ${REGION}
+        selector:
+          dnsZones:
+          - '${TENANT_DOMAIN}'
+
+### Lets encrypt ACME certificate for all endpoints ###
+- |-
+  apiVersion: cert-manager.io/v1alpha2
+  kind: Certificate
+  metadata:
+    name: acme-tls-cert
+    namespace: cert-manager
+  spec:
+    dnsNames:
+      - '*.${TENANT_DOMAIN}'
+
+### Cloud-watch logging and monitoring ###
+- |-
+  apiVersion: v1
+  data:
+    cluster.name: ${CLUSTER_NAME}
+    logs.region: ${REGION}
+  kind: ConfigMap
+  metadata:
+    name: cluster-info
+    namespace: amazon-cloudwatch
+
+- |-
+  apiVersion: v1
+  data:
+    # Configuration is in Json format. No matter what configure change you make,
+    # please keep the Json blob valid.
+    cwagentconfig.json: |
+      {
+        "agent": {
+          "region": "${REGION}"
+        },
+        "logs": {
+          "metrics_collected": {
+            "kubernetes": {
+              "cluster_name": "${CLUSTER_NAME}",
+              "metrics_collection_interval": 60
+            }
+          },
+          "force_flush_interval": 5
+        }
+      }
+  kind: ConfigMap
+  metadata:
+    name: cwagentconfig
+    namespace: amazon-cloudwatch
+
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: nri-bundle-nri-prometheus-config
+    namespace: newrelic
+  data:
+    config.yaml: |
+      cluster_name: ${NEW_RELIC_ENVIRONMENT_NAME}
+      require_scrape_enabled_label_for_nodes: true
+
+- |-
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: nri-bundle-nri-kube-events-config
+    namespace: newrelic
+  data:
+    config.yaml: |-
+      sinks:
+      - name: newRelicInfra
+        config:
+          agentEndpoint: http://localhost:8001/v1/data
+          clusterName: ${NEW_RELIC_ENVIRONMENT_NAME}
+          agentHTTPTimeout: 30s
+
+# In the "kustomize" overlay for CI/CD environments, manually create the "newrelic-license-key" secret in the "newrelic" namespace instead of using the "newrelic-license-secret-exporter" job to automate it. Otherwise, concurrent branch pipelines can fail because the "newrelic" namespace is shared across all "ping-cloud" branch pipelines and the updating immutable fields in the exporter job can fail.
+
+- |-
+  apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: newrelic-license-secret-exporter
+    namespace: newrelic
+  $patch: delete
+
+patchesJson6902:
+
+### Patch to inject environment variables to SigSci agent container ###
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nginx-ingress-controller
+    namespace: ingress-nginx-public
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/1/env/0/value
+      value: ${REGION}
+
+    - op: replace
+      path: /spec/template/spec/containers/1/env/1/value
+      value: ${BELUGA_ENV_NAME}
+
+# Change the default TLS secret for the ingress controllers
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nginx-ingress-controller
+    namespace: ingress-nginx-private
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value:
+        --default-ssl-certificate=${NAMESPACE}/acme-tls-cert
+
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nginx-ingress-controller
+    namespace: ingress-nginx-public
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value:
+        --default-ssl-certificate=${NAMESPACE}/acme-tls-cert
+
+# Update nginx replica count to support dev-env and CI/CD workloads.
+- target:
+    group: autoscaling
+    version: v1
+    kind: HorizontalPodAutoscaler       
+    name: nginx-ingress-controller
+    namespace: ingress-nginx-public
+  patch: |-
+    - op: replace
+      path: /spec/minReplicas
+      value: 3
+    - op: replace
+      path: /spec/maxReplicas
+      value: 3  
+
+# Cluster auto-scaler
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: cluster-autoscaler
+    namespace: kube-system
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/command/-
+      value:
+        --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/${CLUSTER_NAME}
+    - op: add
+      path: /spec/template/spec/containers/0/env
+      value:
+        - name: AWS_REGION
+          value: ${REGION}
+
+# Change the namespace of the ACME certificate to the ping-cloud namespace
+- target:
+    group: cert-manager.io
+    version: v1alpha2
+    kind: Certificate
+    name: acme-tls-cert
+    namespace: cert-manager
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: ${NAMESPACE}
+
+# Configure external-dns to only own the hosted zone for the tenant domain
+# Also, change its update policy to "sync" so records are cleaned up in dev hosted zones
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: external-dns
+    namespace: external-dns
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/args
+      value:
+        - --source=service
+        - --source=ingress
+        - --provider=aws
+        - --policy=sync
+        - --aws-zone-type=public
+        - --registry=txt
+        - --publish-internal-services
+        - --domain-filter=${TENANT_DOMAIN}.
+
+# Make the admin nodes available externally for test purposes. In general, they
+# will be behind a VPN gateway on all CDEs so only admins have access to them.
+- target:
+    version: v1
+    kind: Service
+    name: ingress-nginx
+    namespace: ingress-nginx-private
+  patch: |-
+    - op: remove
+      path: /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-internal
+
+# Newrelic resources
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nri-bundle-nri-metadata-injection
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/clusterName
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: nri-bundle-newrelic-metadata
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/CLUSTER_NAME
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: apps
+    version: v1
+    kind: DaemonSet
+    name: nri-bundle-newrelic-infrastructure
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/CLUSTER_NAME
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
+
+- target:
+    group: apps
+    version: v1
+    kind: DaemonSet
+    name: nri-bundle-newrelic-logging
+    namespace: newrelic
+  patch: |-
+    - op: replace
+      path: /spec/template/metadata/annotations/CLUSTER_NAME
+      value: ${NEW_RELIC_ENVIRONMENT_NAME}
