@@ -72,6 +72,7 @@
 - Update kube-state-metrics to v2.7.0
 - Bug fix, remove-from-secondary-patch.yaml not getting applied
 - Remove healthchecks for undeployed products in customer-hub
+- Add Argo Secondary Region Ingress URL as a Virtual Host within PA-WAS
 - Default ngnix hpa configuration in medium environment is lower than small
 - Fix cluster_name variable in Grafana Dashboards for CHUB
 - Remove PC resources from secondary customer-hub
@@ -98,8 +99,14 @@
 - Add REGION env var for healthcheck probes in customer hub
 - Fix IRSA role for pingfederate-admin-serviceaccount
 - Add "--skipPrime" flag to PD start-server script
+- Upgrade PingFederate to v11.3.1
 - Update PA-WAS admin/engine CSD upload job to reference PA-WAS CSD upload configMaps, rather than just pingaccess.  
 - Fluent-Bit: change IMDS vesrion to v2
+- Remove docker logs from fluent-bit
+- Reset 'cn=replication' server ID entry within PingDirectory on startup
+- Initialize Replication on New PingDirectory Child Non-Seed Servers
+- Avoid pending stating by prioritizing PingDirectory pods and its backup / restore Job using k8s pod PriorityClass
+- Prometheus alerts from secondary region display correct region in alerts
 
 _Changes:_
 
@@ -197,6 +204,7 @@ _Changes:_
 - [X] PDO-5279 Update kube-state-metrics cluster tool to v2.7.0 for EKS 1.25
 - [X] PDO-5281 Default ngnix hpa configuration in medium environment is lower than small
 - [X] PDO-5288 Update health check. healthcheck should only test the resources that have been deployed
+- [X] PDO-5289 Add Argo Secondary Region Ingress URL as a Virtual Host within PA-WAS
 - [X] PDO-5298 Bugfix - make scripts compatible with Debian
 - [X] PDO-5302 Fix PF multiline parsing
 - [X] PDO-5315 Bugfix - argocd-bootstrap to use region specific env vars
@@ -229,7 +237,13 @@ _Changes:_
 - [X] PDO-5815 Fluent-Bit: change IMDS version to v2
 - [X] PDO-5832 Add "--skipPrime" flag to PD start-server script
 - [X] PDO-5869 Fix IRSA role for pingfederate-admin-serviceaccount
+- [X] PDO-5906 Upgrade PingFederate to v11.3.1
 - [X] PDO-5911 Update PA-WAS Admin CSD Upload job to use PA-WAS cm
+- [X] PDO-5979 Reset 'cn=replication' server ID entry within PingDirectory on startup
+- [X] PDO-6015 Remove docker logs from fluent-bit
+- [X] PDO-6021 Initialize Replication on New PingDirectory Child Non-Seed Servers
+- [X] PDO-6159 Avoid pending stating by prioritizing PingDirectory pods and its backup / restore Job using k8s pod PriorityClass
+- [X] PDO-6234 Prometheus alerts from secondary region display correct region in alerts
 
 ### 1.17.0.0
 
