@@ -106,7 +106,9 @@
 - Reset 'cn=replication' server ID entry within PingDirectory on startup
 - Initialize Replication on New PingDirectory Child Non-Seed Servers
 - Avoid pending stating by prioritizing PingDirectory pods and its backup / restore Job using k8s pod PriorityClass
+- Disable ArgoCD Image Updater
 - Prometheus alerts from secondary region display correct region in alerts
+- Improve logstash alerting in multi-regional cluster
 
 _Changes:_
 
@@ -238,12 +240,15 @@ _Changes:_
 - [X] PDO-5832 Add "--skipPrime" flag to PD start-server script
 - [X] PDO-5869 Fix IRSA role for pingfederate-admin-serviceaccount
 - [X] PDO-5906 Upgrade PingFederate to v11.3.1
-- [X] PDO-5911 Update PA-WAS Admin CSD Upload job to use PA-WAS cm
+- [X] PDO-5911 Update PA-WAS Admin CSD Upload job to use PA-WAS ConfigMap
+- [X] PDO-5961 Disable ArgoCD Image Updater
 - [X] PDO-5979 Reset 'cn=replication' server ID entry within PingDirectory on startup
 - [X] PDO-6015 Remove docker logs from fluent-bit
 - [X] PDO-6021 Initialize Replication on New PingDirectory Child Non-Seed Servers
 - [X] PDO-6159 Avoid pending stating by prioritizing PingDirectory pods and its backup / restore Job using k8s pod PriorityClass
 - [X] PDO-6234 Prometheus alerts from secondary region display correct region in alerts
+- [X] PDO-6235 Improve logstash alerting in multi-regional cluster
+- [X] PDO-6249 Fluent-bit kubernetes filter sometimes doesn't work in CW pipeline
 
 ### 1.17.0.0
 
