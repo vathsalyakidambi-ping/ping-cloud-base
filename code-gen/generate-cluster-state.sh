@@ -207,11 +207,7 @@
 # PRIMARY_TENANT_DOMAIN            | In multi-cluster environments, the primary domain. | Same as TENANT_DOMAIN.
 #                                  | Only used if IS_MULTI_CLUSTER is true.             |
 #                                  |                                                    |
-# PROM_NOTIFICATION_ENABLED        | Flag indicating if PGO alerts should be sent to    | False
-#                                  | the endpoint configured in the argo-events         |
-#                                  |                                                    |
-# PROM_SLACK_CHANNEL               | The Slack channel name for PGO argo-events to send | CDE environment: p1as-application-oncall
-#                                  | notification.                                      |
+# OPSGENIE_API_KEY                 | API key for OpsGenie to send alerts from Prometheus| PLACEHOLDER
 #                                  |                                                    |
 # RADIUS_PROXY_ENABLED             | Feature Flag - Indicates if the radius proxy       | False
 #                                  | feature for PingFederate engines is enabled        |
@@ -429,7 +425,7 @@ ${ARGOCD_CDE_URL_SSM_TEMPLATE}
 ${ARGOCD_ENVIRONMENTS}
 ${ARGOCD_SLACK_TOKEN_BASE64}
 ${SLACK_CHANNEL}
-${PROM_SLACK_CHANNEL}
+${OPSGENIE_API_KEY_BASE64}
 ${DASH_REPO_URL}
 ${DASH_REPO_BRANCH}
 ${APP_RESYNC_SECONDS}
@@ -713,7 +709,6 @@ echo "Initial CLUSTER_ENDPOINT: ${CLUSTER_ENDPOINT}"
 
 echo "Initial SLACK_CHANNEL: ${SLACK_CHANNEL}"
 echo "Initial NON_GA_SLACK_CHANNEL: ${NON_GA_SLACK_CHANNEL}"
-echo "Initial PROM_SLACK_CHANNEL: ${PROM_SLACK_CHANNEL}"
 
 echo "Initial IMAGE_LIST: ${IMAGE_LIST}"
 echo "Initial IMAGE_TAG_PREFIX: ${IMAGE_TAG_PREFIX}"
@@ -852,10 +847,8 @@ export NON_GA_SLACK_CHANNEL="${NON_GA_SLACK_CHANNEL:-nowhere}"
 # If IS_GA=true, use default Slack channel; if IS_GA=false, use NON_GA_SLACK_CHANNEL value as Slack channel.
 if "${IS_GA}"; then
   export SLACK_CHANNEL="${SLACK_CHANNEL:-p1as-application-oncall}"
-  export PROM_SLACK_CHANNEL="${PROM_SLACK_CHANNEL:-p1as-application-oncall}"
 else
   export SLACK_CHANNEL="${SLACK_CHANNEL:-${NON_GA_SLACK_CHANNEL}}"
-  export PROM_SLACK_CHANNEL="${PROM_SLACK_CHANNEL:-${NON_GA_SLACK_CHANNEL}}"
 fi
 
 NEW_RELIC_LICENSE_KEY="${NEW_RELIC_LICENSE_KEY:-ssm://pcpt/sre/new-relic/java-agent-license-key}"
@@ -868,6 +861,9 @@ if [[ ${NEW_RELIC_LICENSE_KEY} == "ssm://"* ]]; then
     NEW_RELIC_LICENSE_KEY="${ssm_value}"
   fi
 fi
+
+OPSGENIE_API_KEY="${OPSGENIE_API_KEY:-PLACEHOLDER}"
+export OPSGENIE_API_KEY_BASE64=$(base64_no_newlines "${OPSGENIE_API_KEY}")
 
 export NEW_RELIC_LICENSE_KEY_BASE64=$(base64_no_newlines "${NEW_RELIC_LICENSE_KEY}")
 
@@ -988,7 +984,6 @@ echo "Using KARPENTER_ROLE_ANNOTATION_KEY_VALUE: ${KARPENTER_ROLE_ANNOTATION_KEY
 echo "Using NLB_NGX_PUBLIC_ANNOTATION_KEY_VALUE: ${NLB_NGX_PUBLIC_ANNOTATION_KEY_VALUE}"
 
 echo "Using SLACK_CHANNEL: ${SLACK_CHANNEL}"
-echo "Using PROM_SLACK_CHANNEL: ${PROM_SLACK_CHANNEL}"
 
 echo "Using APP_RESYNC_SECONDS: ${APP_RESYNC_SECONDS}"
 
@@ -1169,7 +1164,7 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
   set_var "IRSA_ARGOCD_ANNOTATION_KEY_VALUE" "" "${IRSA_BASE_PATH}" "irsa-argocd/arn" "${IRSA_TEMPLATE}"
 
   # shellcheck disable=SC2016
-  KARPENTER_ROLE_TEMPLATE='eks.amazonaws.com/role-arn: arn:aws:iam::${ssm_value}:role/pcpt/KarpenterControllerRole'
+  KARPENTER_ROLE_TEMPLATE='eks.amazonaws.com/role-arn: arn:aws:iam::${ssm_value}:role'
   set_var "KARPENTER_ROLE_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}" \
           "${KARPENTER_ROLE_TEMPLATE}/KarpenterControllerRole"
 
@@ -1272,6 +1267,26 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
     # Add ArgoCD to Beluga Environments since it normally runs only in customer-hub
     echo "This is a Beluga Development Environment, copying ArgoCD into the CSR"
     cp -R "${CHUB_TEMPLATES_DIR}/base/cluster-tools/git-ops" "${K8S_CONFIGS_DIR}/base/cluster-tools/"
+    cp -R "${CHUB_TEMPLATES_DIR}/region/git-ops" "${K8S_CONFIGS_DIR}/${REGION_NICK_NAME}/"
+
+    # Append patch to merge base and region env vars for ArgoCD in region kustomization.yaml
+    export CHUB_REGION_KUST_FILE="${CHUB_TEMPLATES_DIR}/region/kustomization.yaml"
+    yq eval -i '.configMapGenerator += (load(strenv(CHUB_REGION_KUST_FILE)).configMapGenerator[] | select(.name == "argocd-bootstrap"))' "${PRIMARY_PING_KUST_FILE}"
+
+    # Keep ArgoCD in pingaccess-was-ingress by replacing the delete patches
+    # shellcheck disable=SC2016
+    export argocd_ingress_patch='
+# Argo CD pingaccess was runtime
+- op: replace
+  path: /spec/tls/0/hosts/6
+  value: argocd.${DNS_ZONE}
+- op: replace
+  path: /spec/rules/6/host
+  value: argocd.${DNS_ZONE}
+'
+    K8S_CONFIGS_PA_WAS_ENGINE_KUSTOMIZE_FILE="${K8S_CONFIGS_DIR}/base/ping-cloud/pingaccess-was/engine/kustomization.yaml"
+    yq eval -i '.patchesJson6902[1].patch |= (from_yaml | .[:-2] | to_yaml)' "${K8S_CONFIGS_PA_WAS_ENGINE_KUSTOMIZE_FILE}"
+    yq eval -i '.patchesJson6902[1].patch += strenv(argocd_ingress_patch)' "${K8S_CONFIGS_PA_WAS_ENGINE_KUSTOMIZE_FILE}"
 
     # Append the secrets from customer-hub to the CDE secrets, except PingCentral since that doesn't exist in the CDE
     printf "\n# %%%% NOTE: Below secrets are for the Developer CDE only (when IS_BELUGA_ENV is 'true') to make sure Argo works properly %%%%#\n" >> "${K8S_CONFIGS_DIR}/base/secrets.yaml"
