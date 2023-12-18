@@ -87,8 +87,20 @@
 - Set Karpenter defaultInstanceProfile via Environment Variable
 - Add entry in base values.yaml for disabling subchart dependencies
 - Add PingOne SSO for ArgoCD
+- Modify appintegrations cache config within PingDirectory
 - Remove Grafana from ping-cloud-base image tag list
 - Remove p14c-oauth-service job and pod
+- Remove prime-thread-count setting from userRoot backend within PingDirectory
+- Implemented: OpenSearch EBS gp3 Storage Class + Kubernetes-Volume-Autoscaler
+- Allow CSR to override the duration and renewBefore properties within cert-manager
+- Updating image-map.sh to include CHART_MAP variable. 
+- Logstash: Migrate to AWS EBS gp3 Volumes
+- Newrelic-Prometheus-Agent: Send Kubernetes-volume-Autoscaler Metrics to New Relic
+- Update CreateCluster script to provision Karpenter-ready Cluster.
+- Removed: AWS EFS CSI Driver
+- Prometheus: Migrate to AWS EBS gp3 Volumes
+- Update alert rules for PGO
+- Update integration tests to be able to run locally
 
 _Changes:_
 
@@ -100,6 +112,7 @@ _Changes:_
 - [X] PDO-4857 Add Beluga Tools code-gen directory to PCB
 - [X] PDO-4868 Update update-cluster-state script for MonoRepo
 - [X] PDO-4896 Update ping-cloud-base karpenter version to v0.28.1
+- [X] PDO-4900 Remove myping code
 - [X] PDO-5005 Update generate-cluster-state script to pull profiles from code-gen dir
 - [X] PDO-5012 Implement IRSA role for external-dns
 - [X] PDO-5107 Implement IRSA role for cert-manager
@@ -145,6 +158,7 @@ _Changes:_
 - [X] PDO-5549 Update kube-state-metrics cluster tool to v2.8.1 for EKS 1.26
 - [X] PDO-5558 Mirror our own version of newrelic images
 - [X] PDO-5571 Update nginx-ingress-controller to v1.6.4 to support EKS 1.26
+- [X] PDO-5578 Update CreateCluster script to provision Karpenter-ready Cluster.
 - [X] PDO-5594 PingOne configuration required for ArgoCD SSO authentication
 - [X] PDO-5601 os-dashboards-pf configMap breaks developer, and new ci/cd deploys
 - [X] PDO-5647 Handle SIGTERM properly in enrichment-bootstrap
@@ -191,10 +205,12 @@ _Changes:_
 - [X] PDO-5923 Karpenter capacity and performance Grafana dashboard
 - [X] PDO-5924 Multi-Region CDE: opensearch-bootstrap job in a second region can't connect to OpenSearch
 - [X] PDO-5928 Configure PA-WAS in P1 for customer hub deployments
+- [X] PDO-5963 Remove prime-thread-count from userRoot backend within PingDirectory
 - [X] PDO-5972 Karpenter Pods: Verify Logs are sent to CloudWatch
 - [X] PDO-6006 Change Argo CD log to 'ERROR' level
 - [X] PDO-6007 Change external-dns pod log to 'ERROR' level
 - [X] PDO-6008 Change Opensearch log to 'WARNING' level
+- [X] PDO-6027 AWS EFS CSI Driver: Remove it
 - [X] PDO-6033 Configure PingAccess SSO app for Ping internal group access
 - [X] PDO-6034 Configure PingFederate SSO app for Ping internal group access
 - [X] PDO-6061 Fix pingone-configurator pod crashing when missing ConfigMap ping-cloud/is-pingone
@@ -208,6 +224,7 @@ _Changes:_
 - [X] PDO-6166 Add PingFederate periodic backup limits
 - [X] PDO-6167 Add PodDisruptionBudget for ingress-nginx-public
 - [X] PDO-6187 Increase wait time for backup alerts for PGO
+- [X] PDO-6188 Update alert rules for PGO
 - [X] PDO-6189 Fluentbit: Performance degradation under high load
 - [X] PDO-6190 Logstash: Readiness probe fails under high load
 - [X] PDO-6224 Remove Grafana ping-app patches from remove-from-secondary-patch.yaml 
@@ -216,8 +233,16 @@ _Changes:_
 - [X] PDO-6263 ArgoCD sync failing due to timeout on v1.19-release-branch
 - [X] PDO-6264 OpenSearch Post-Migration: Cluster: Avail and Recovery: Cluster and Index Tuning, Enable Segment Replication
 - [X] PDO-6267 Update to enable detailed monitoring on instances
+- [X] PDO-6282 Modify appintegrations cache config within PingDirectory
 - [x] PDO-6305 Set Karpenter defaultInstanceProfile via Environment Variable
 - [X] PDO-6311 Argocd pod resources spec adjusted
+- [X] PDO-6323 Allow CSR to override the duration and renewBefore properties within cert-manager
+- [X] PDO-6333 Implement: OpenSearch EBS gp3 Storage Class + Kubernetes-Volume-Autoscaler
+- [X] PDO-6335 Newrelic-Prometheus-Agent: Send Kubernetes-volume-Autoscaler Metrics to New Relic
+- [X] PDO-6337 Migrate logstash to the GP3 volumes
+- [X] PDO-6338 Migrate Prometheus to the GP3 volumes
+- [X] PDO-6420 Update tag-release.sh to replace the helm chart versions in PCB
+- [X] PDO-6526 Update integration tests to be able to run locally
 
 ### 1.18.0.0
 
