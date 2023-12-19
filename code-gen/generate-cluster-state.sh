@@ -1042,6 +1042,7 @@ echo "Using IRSA_INGRESS_ANNOTATION_KEY_VALUE: ${IRSA_INGRESS_ANNOTATION_KEY_VAL
 echo "Using CLUSTER_ENDPOINT: ${CLUSTER_ENDPOINT}"
 echo "Using KARPENTER_INSTANCE_PROFILE: ${KARPENTER_INSTANCE_PROFILE}"
 echo "Using KARPENTER_CONTROLLER_IAM_ROLE: ${KARPENTER_CONTROLLER_IAM_ROLE}"
+echo "Using DEFAULT_CLUSTER_UPTIME: ${DEFAULT_CLUSTER_UPTIME}"
 
 echo "Using KARPENTER_ROLE_ANNOTATION_KEY_VALUE: ${KARPENTER_ROLE_ANNOTATION_KEY_VALUE}"
 
@@ -1221,17 +1222,18 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
 
   add_derived_variables
 
-  # TODO: With https://pingidentity.atlassian.net/browse/PP-5719 we should see all of the IRSA roles represented like
+  # TODO: With https://pingidentity.atlassian.net/browse/PP-6073 we should see all of the IRSA roles represented like
   # ArgoCD, then we can change this IRSA SSM fetch code to be consistent
   # shellcheck disable=SC2016
   IRSA_TEMPLATE='eks.amazonaws.com/role-arn: ${ssm_value}'
   set_var "IRSA_CERT_MANAGER_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/cert-manager/arn" "${IRSA_TEMPLATE}"
   set_var "IRSA_EXTERNAL_DNS_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/external-dns/arn" "${IRSA_TEMPLATE}"
   set_var "IRSA_PING_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}" "${IRSA_TEMPLATE}/irsa-ping"
-  set_var "IRSA_PA_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}" "${IRSA_TEMPLATE}/irsa-pingaccess"
-  set_var "IRSA_PD_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}" "${IRSA_TEMPLATE}/irsa-pingdirectory"
-  set_var "IRSA_PF_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}" "${IRSA_TEMPLATE}/irsa-pingfederate"
+  set_var "IRSA_PA_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/pingaccess/arn" "${IRSA_TEMPLATE}"
+  set_var "IRSA_PD_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/pingdirectory/arn" "${IRSA_TEMPLATE}"
+  set_var "IRSA_PF_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/pingfederate/arn" "${IRSA_TEMPLATE}"
   set_var "IRSA_CWAGENT_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/cloudwatch-agent/arn" "${IRSA_TEMPLATE}"
+  # ArgoCD only for customer-hub
   set_var "IRSA_ARGOCD_ANNOTATION_KEY_VALUE" "" "${IRSA_BASE_PATH}" "irsa-argocd/arn" "${IRSA_TEMPLATE}"
   set_var "IRSA_INGRESS_ANNOTATION_KEY_VALUE" "" "${ACCOUNT_BASE_PATH}" "${ENV}/irsa-role/ingress-controller/arn" "${IRSA_TEMPLATE}"
 
@@ -1372,15 +1374,20 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
 
     # Keep ArgoCD in pingaccess-was-ingress by replacing the delete patches
     # shellcheck disable=SC2016
-    export argocd_ingress_patch='
+    if test "${ENV}" = "${CUSTOMER_HUB}"; then
+      argo_host_index=5
+    else
+      argo_host_index=6
+    fi
+    export argocd_ingress_patch="
 # Argo CD pingaccess was runtime
 - op: replace
-  path: /spec/tls/0/hosts/6
+  path: /spec/tls/0/hosts/${argo_host_index}
   value: argocd.${DNS_ZONE}
 - op: replace
-  path: /spec/rules/6/host
+  path: /spec/rules/${argo_host_index}/host
   value: argocd.${DNS_ZONE}
-'
+"
     K8S_CONFIGS_PA_WAS_ENGINE_KUSTOMIZE_FILE="${K8S_CONFIGS_DIR}/base/ping-cloud/pingaccess-was/engine/kustomization.yaml"
     yq eval -i '.patchesJson6902[1].patch |= (from_yaml | .[:-2] | to_yaml)' "${K8S_CONFIGS_PA_WAS_ENGINE_KUSTOMIZE_FILE}"
     yq eval -i '.patchesJson6902[1].patch += strenv(argocd_ingress_patch)' "${K8S_CONFIGS_PA_WAS_ENGINE_KUSTOMIZE_FILE}"
