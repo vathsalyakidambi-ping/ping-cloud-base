@@ -93,7 +93,7 @@ spec:
           runAsNonRoot: true
           runAsUser: 9031
           allowPrivilegeEscalation: false
-        image: 705370621539.dkr.ecr.us-west-2.amazonaws.com/pingcloud-apps/pingdirectory:pdo-6405
+        image: 705370621539.dkr.ecr.us-west-2.amazonaws.com/pingcloud-apps/pingdirectory:pdo-6405-1
         imagePullPolicy: Always
         command: [ "/bin/sh","-c" ]
         # 1) Copy P1AS hooks to staging
