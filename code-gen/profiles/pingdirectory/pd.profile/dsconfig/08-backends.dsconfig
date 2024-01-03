@@ -3,7 +3,6 @@ dsconfig set-global-configuration-prop \
 
 dsconfig set-backend-prop \
         --backend-name "userRoot" \
-        --set shared-local-db-backend-database-cache-percent:55
         --set import-thread-count:1
 
 dsconfig set-backend-prop \
