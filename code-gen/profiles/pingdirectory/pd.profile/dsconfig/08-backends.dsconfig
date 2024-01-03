@@ -1,8 +1,10 @@
 dsconfig set-backend-prop \
         --backend-name "userRoot" \
-        --set-global-configuration-prop use-shared-database-cache-across-all-local-db-backends:true \
-        --set shared-local-db-backend-database-cache-percent:35 \
         --set import-thread-count:1
+
+dsconfig set-global-configuration-prop \
+        --set use-shared-database-cache-across-all-local-db-backends:true \
+        --set shared-local-db-backend-database-cache-percent:55
 
 dsconfig set-backend-prop \
       --backend-name "platformconfig" \
