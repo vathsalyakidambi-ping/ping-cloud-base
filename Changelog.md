@@ -107,6 +107,8 @@
 - Replace healthcheck & metadata related manifests & configs with p1as-beluga-tools microservice
 - Increase OpenSearch warm replicas to 3 to make it HA
 - Renaming installP1asSubcharts value to isMicroserviceDeploy for microservices
+- Implement Shared db cache to enhance support of multiple backends
+- Upgrade all AWSCLI containers to the most recent stable version that includes support for ARM, v2.+
 
 _Changes:_
 
@@ -251,11 +253,14 @@ _Changes:_
 - [X] PDO-6338 Migrate Prometheus to the GP3 volumes
 - [X] PDO-6411 Increase OpenSearch warm replicas to 3 to make it HA
 - [X] PDO-6420 Update tag-release.sh to replace the helm chart versions in PCB
+- [X] PDO-6429 Create password for pf.cluster.auth.pwd property within run.properties for PingFederate
 - [X] PDO-6457 Set PingDataSync OOTB connection to JVM-Default
 - [X] PDO-6476 Update and implement dependency helm chart conditional value
 - [X] PDO-6482 Update nginx logs to include hostname
+- [X] PDO-6494 Implement Shared db cache to enhance support of multiple backends
 - [X] PDO-6506 Update to fix karpenter provisoner config
 - [X] PDO-6526 Update integration tests to be able to run locally
+- [X] PDO-6585:Upgrade all AWSCLI containers to the most recent stable version that includes support for ARM, v2.+
 
 ### 1.18.0.0
 
