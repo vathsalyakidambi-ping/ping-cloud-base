@@ -58,6 +58,7 @@
 - Opensearch cluster log level changed to 'WARNING'
 - Update metrics-server image to v0.6.4
 - Update kubectl to 1.26.0 for EKS 1.27
+- Update BusyBox to 1.36 for EKS 1.27
 - Update kube-state-metrics to v2.9.2
 - Remove dev-env.sh, dev-cluster-state (dir), and corresponding variables.
 - Update Grafana to v10.1.0
@@ -197,6 +198,7 @@ _Changes:_
 - [X] PDO-5797 Unify severity format for all prometheus alerts
 - [X] PDO-5800 Update pd.profile to align with PingDirectory upgrade
 - [X] PDO-5801 Update cluster-autoscaler v1.27.0/1.27.1 for eks 1.27
+- [X] PDO-5802 Update BusyBox to 1.36 for EKS 1.27
 - [X] PDO-5803 Update EBS Driver to 1.21.0 for EKS 1.27
 - [X] PDO-5813 Remove excessive patches for the second region
 - [X] PDO-5835 Create PD init container for KMS
@@ -254,6 +256,7 @@ _Changes:_
 - [X] PDO-6411 Increase OpenSearch warm replicas to 3 to make it HA
 - [X] PDO-6420 Update tag-release.sh to replace the helm chart versions in PCB
 - [X] PDO-6429 Create password for pf.cluster.auth.pwd property within run.properties for PingFederate
+- [X] PDO-6453 Use cache-keys-only and thread count of 1 when multiple backends are enabled for PingDirectory
 - [X] PDO-6457 Set PingDataSync OOTB connection to JVM-Default
 - [X] PDO-6476 Update and implement dependency helm chart conditional value
 - [X] PDO-6482 Update nginx logs to include hostname
