@@ -142,6 +142,7 @@ rules:
     resources:
     - "persistentvolumeclaims"
     verbs:
+    - patch
     - delete
     - get
     - create
