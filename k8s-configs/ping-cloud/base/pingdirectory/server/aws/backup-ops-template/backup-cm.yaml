@@ -7,8 +7,9 @@ data:
     #!/bin/sh
 
     delete_pvc() {
+      kubectl delete pvc pingdirectory-backup -n ping-cloud --grace-period=0 --force --wait=false
       kubectl patch pvc pingdirectory-backup -p '{"metadata":{"finalizers":null}}' -n ping-cloud
-      kubectl delete pvc pingdirectory-backup -n ping-cloud --grace-period=0 --force
+      
     }
 
     # This guarantees that delete_pvc method will always run, even if the backup job exits due to an error
