@@ -115,8 +115,8 @@ spec:
           allowPrivilegeEscalation: false
         image: public.ecr.aws/r2h3l6e4/pingcloud-clustertools/busybox:1.36
         imagePullPolicy: IfNotPresent
-        command: [ "/bin/bash", "-c" ]
-        args: [  "echo wait-for-service script ; cat /wait-for-services.sh && /wait-for-services.sh " ]
+        command: ["/bin/sh","-c"]
+        args: [ "echo wait-for-service script ; cat /wait-for-services.sh && /wait-for-services.sh" ]
         volumeMounts:
         - name: pingfederate-init
           mountPath: /utils.lib.sh
