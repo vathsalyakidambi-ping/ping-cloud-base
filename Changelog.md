@@ -16,6 +16,7 @@
 - Add manual healthchecks feature flag
 - Update ingress controller to v1.9.6
 - Update ArgoCD to v2.10.0
+- Replace PF_CLUSTER_PUBLIC_HOSTNAME with PF_ADMIN_PUBLIC_HOSTNAME in wait-for-services.sh script
 
 _Changes:_
 
@@ -34,6 +35,7 @@ _Changes:_
 - [X] PDO-6721 Update kubectl to 1.27.10 for EKS 1.28
 - [X] PDO-6723 Update cluster-autoscaler v1.29.0 for eks 1.28
 - [X] PDO-6750 Fix the "pingfederate-cluster" service label selector
+- [X] PDO-6611 Replace PF_CLUSTER_PUBLIC_HOSTNAME with PF_ADMIN_PUBLIC_HOSTNAME in wait-for-services.sh script
 
 v1.18.0.0
 
