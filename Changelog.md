@@ -35,6 +35,7 @@ _Changes:_
 - [X] PDO-6721 Update kubectl to 1.27.10 for EKS 1.28
 - [X] PDO-6723 Update cluster-autoscaler v1.29.0 for eks 1.28
 - [X] PDO-6750 Fix the "pingfederate-cluster" service label selector
+- [X] PDO-6779 Update CPU and Memory limits for PD
 - [X] PDO-6611 Replace PF_CLUSTER_PUBLIC_HOSTNAME with PF_ADMIN_PUBLIC_HOSTNAME in wait-for-services.sh script
 
 v1.18.0.0
