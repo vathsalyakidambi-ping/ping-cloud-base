@@ -32,23 +32,21 @@ global:
           daOauthTokenValidatorSecret: MkZlZGVyYXRlTTByZQ==
           acmeCertKeystorePassword: MkZlZGVyYXRlTTByZQ==
           dmanagerPassword: MkZlZGVyYXRlTTByZQ==
-        
-
   ########################################################
   # Multi-region parameters
   ########################################################
-  isMultiCluster: false
+  isMultiCluster: ${IS_MULTI_CLUSTER}
 
   # primaryRegion is the primary AWS region name
   # the primary region should have the same value for region and primaryRegion
-  primaryRegion: "us-west-2"
+  primaryRegion: "${PRIMARY_REGION}"
 
   # primaryDnsZone is the primary dns zone for customer for region
-  primaryDnsZone: "walkerbrown-primary.ping-demo.com"
+  primaryDnsZone: "${PRIMARY_DNS_ZONE}"
 
   # primaryTenantDomain is the primary domain suffix for customer for region
   # the primary region should have the same value for tenantDomain and primaryTenantDomain
-  primaryTenantDomain: "walkerbrown-primary.ping-demo.com"
+  primaryTenantDomain: "${PRIMARY_TENANT_DOMAIN}"
 
   # secondaryTenantDomains is an optional comma-separated list of the tenant domain suffixes of secondary regions used
   # for PingFederate adaptive clustering using the JGroups DNS_PING discovery protocol:
@@ -66,43 +64,43 @@ global:
   #     secondary regions are created to avoid pod rollouts. DNS_PING will simply ignore
   #     unreachable domains. If it is not set beforehand, then all servers in the PF
   #     cluster (admin and engines) must be re-rolled to pick up the change.
-  secondaryTenantDomains: ""
+  secondaryTenantDomains: "${SECONDARY_TENANT_DOMAINS}"
 
   # globalTenantDomain is the region-independent URL used for DNS failover/routing
-  globalTenantDomain: "global.walkerbrown-primary.ping-demo.com"
+  globalTenantDomain: "${GLOBAL_TENANT_DOMAIN}"
 
   ########################################################
   # S3 buckets
   ########################################################
   # pingArtifactRepoUrl is the ping-hosted common artifacts URL
-  pingArtifactRepoUrl: "https://ping-artifacts.s3-us-west-2.amazonaws.com"
+  pingArtifactRepoUrl: "${PING_ARTIFACT_REPO_URL}"
 
   # logArchiveUrl is the customer-specific log URL for region
-  logArchiveUrl: "ssm://walkerbrown-primary/pcpt/service/storage/logs/uri"
+  logArchiveUrl: "${LOG_ARCHIVE_URL}"
 
   # backupUrl is the customer-specific backup URL for region
-  backupUrl: "ssm://walkerbrown-primary/pcpt/service/storage/backup/uri"
+  backupUrl: "${BACKUP_URL}"
 
   ########################################################
   # Miscellaneous ping-cloud variables
   ########################################################
   # pingCloudNamespace is the namespace where Ping apps are deployed
-  pingCloudNamespace: "ping-cloud"
+  pingCloudNamespace: "${PING_CLOUD_NAMESPACE}"
 
   # k8sGitBranch is the ping-cloud-base git branch for base Kubernetes manifests
-  k8sGitBranch: "pdp-hackathon-2024-wb"
+  k8sGitBranch: "${K8S_GIT_BRANCH}"
 
   # ecrRegistryName is the name of the Docker image registry
-  ecrRegistryName: "public.ecr.aws/r2h3l6e4/dev"
+  ecrRegistryName: "${ECR_REGISTRY_NAME}/dev"
 
   # clusterName is the eks cluster name
-  clusterName: "walkerbrown-primary"
+  clusterName: "${CLUSTER_NAME}"
 
   # serverProfileUrl is the git URL for the profile repo
-  serverProfileUrl: "ssh://APKA2IO25QZRQO75CGFY@git-codecommit.us-west-2.amazonaws.com/v1/repos/walkerbrown-primary-profile-repo"
+  serverProfileUrl: "${SERVER_PROFILE_URL}"
 
   # serverProfileBranch is the git branch for the profile repo
-  serverProfileBranch: "dev"
+  serverProfileBranch: "${SERVER_PROFILE_BRANCH_DERIVED}"
 
   # The image pull policy for all images
   imagePullPolicy: "Always"
@@ -114,18 +112,18 @@ global:
   # Environment-specific variables
   ########################################################
   # environmentType is used by server profile hooks
-  environmentType: "dev"
+  environmentType: "${ENVIRONMENT_TYPE}"
 
   # env is used by Kubernetes manifests
-  env: "dev"
+  env: "${ENV}"
 
-  isBelugaEnv: true
+  isBelugaEnv: ${IS_BELUGA_ENV}
 
   ########################################################
   # DevOps License environment variables
   ########################################################
-  pingIdentityDevopsUser: "walkerbrown@pingidentity.com"
-  pingIdentityDevopsKey: "9cca27f2-4d17-85f2-6e06-138b2a9ec1de"
+  pingIdentityDevopsUser: "${PING_IDENTITY_DEVOPS_USER}"
+  pingIdentityDevopsKey: "${PING_IDENTITY_DEVOPS_KEY}"
 
   #### FEATURE FLAGS ##################################################################################################
   # Most are disabled by default
@@ -133,12 +131,12 @@ global:
 
   # !!! Provisioning for PingFederate is not yet available for multi-region customers !!!
   # Runbook: https://confluence.pingidentity.com/display/PingCloud/How+to+Enable+and+Configure+PingFederate+Provisioning
-  pfProvisioningEnabled: false
+  pfProvisioningEnabled: ${PF_PROVISIONING_ENABLED}
 
-  radiusProxyEnabled: false
+  radiusProxyEnabled: ${RADIUS_PROXY_ENABLED}
 
-  external_ingress_enabled: 
+  external_ingress_enabled: ${EXTERNAL_INGRESS_ENABLED}
 
   # Runbook: https://pingidentity.atlassian.net/wiki/spaces/PDA/pages/427688292/How+to+Enable+and+Disable+Healthchecks+-+1.19.0
-  healthchecksEnabled: false
+  healthchecksEnabled: ${HEALTHCHECKS_ENABLED}
   #####################################################################################################################
