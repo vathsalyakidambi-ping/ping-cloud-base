@@ -1,7 +1,7 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
-namespace: ${PING_CLOUD_NAMESPACE}
+namespace: ping-cloud
 
 resources:
   - ../base
@@ -18,7 +18,7 @@ helmCharts:
       ecrRegistryName: "705370621539.dkr.ecr.us-west-2.amazonaws.com/dev"
     repo: oci://705370621539.dkr.ecr.us-west-2.amazonaws.com/dev/p1as-pingdirectoryproxy  
     # repo: oci://${ECR_REGISTRY_NAME}/dev/p1as-pingdirectoryproxy
-    
+
 ### This field is used to trigger a resync of the p1as-pingdirectoryproxy helm chart ###
 configMapGenerator:
   - name: last-update-reason
