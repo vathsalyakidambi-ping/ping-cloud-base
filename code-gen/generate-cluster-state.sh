@@ -72,8 +72,7 @@
 # ACCOUNT_BASE_PATH                | The account's SSM base path                        | The SSM path: /pcpt/config/k8s-config/accounts/
 #                                  |                                                    |
 # ACCOUNT_TYPE                     | The variable denotes the type of account based on  | No defaults
-#                                  | the IS_GA flag: either 'ga' or 'non-ga'.           |                               |
-#                                  |                                                    |
+#                                  | the IS_GA flag: either 'ga' or 'non-ga'.           |                               
 #                                  |                                                    |
 # ARGOCD_SLACK_TOKEN_SSM_PATH      | SSM path to secret token for ArgoCD slack          | The SSM path:
 #                                  | notifications                                      | ssm://pcpt/argocd/notification/slack/access_token
@@ -177,9 +176,6 @@
 # NEW_RELIC_LICENSE_KEY            | The key of NewRelic APM Agent used to send data to | The SSM path: ssm://pcpt/sre/new-relic/java-agent-license-key
 #                                  | NewRelic account.                                  |
 #                                  |                                                    |
-# NOTIFICATION_ENABLED             | Flag indicating if alerts should be sent to the    | True
-#                                  | endpoint configured in the argo-events             |
-#                                  |                                                    |
 # NLB_EIP_PATH_PREFIX              | The SSM path prefix which stores comma separated   | The string "unused".
 #                                  | AWS Elastic IP allocation IDs that exist in the    |
 #                                  | CDE account of the Ping Cloud customers.           |
@@ -223,8 +219,6 @@
 # PRIMARY_TENANT_DOMAIN            | In multi-cluster environments, the primary domain. | Same as TENANT_DOMAIN.
 #                                  | Only used if IS_MULTI_CLUSTER is true.             |
 #                                  |                                                    |
-# OPSGENIE_API_KEY                 | API key for OpsGenie to send alerts from Prometheus| PLACEHOLDER
-#                                  |                                                    |
 # RADIUS_PROXY_ENABLED             | Feature Flag - Indicates if the radius proxy       | False
 #                                  | feature for PingFederate engines is enabled        |
 #                                  |                                                    |
@@ -252,13 +246,12 @@
 # SERVICE_SSM_PATH_PREFIX          | The prefix of the SSM path that contains service   | /pcpt/service
 #                                  | state data required for the cluster.               |
 #                                  |                                                    |
-# SLACK_CHANNEL                    | The Slack channel name for argo-events to send     | CDE environment: p1as-application-oncall
-#                                  | notification.                                      |
-#                                  |                                                    |
-# NON_GA_SLACK_CHANNEL             | The Slack channel name for argo-events to send     | CDE environment: nowhere
-#                                  | notification in case of IS_GA set to 'false' to    | Dev environment: nowhere
-#                                  | reduce amount of unnecessary notifications sent    |
-#                                  | to on-call channel. Overrides SLACK_CHANNEL        |
+# SLACK_CHANNEL                    | The Slack channel name for ArgoCD-Status Slack     | CDE environment: p1as-application-oncall                                  |                                                    |
+#                                  | notifications.                                     |             
+#                                  |                                                    |                                                                                  
+# NON_GA_SLACK_CHANNEL             | The Slack channel name for ArgoCD-Status Slack     | CDE environment: nowhere
+#                                  | notifications.                                     | Dev environment: nowhere
+#                                  | Overrides SLACK_CHANNEL                            |
 #                                  | variable value if IS_GA=false. By default, set     |
 #                                  | to non-existent channel name to prevent flooding.  |
 #                                  |                                                    |
@@ -439,24 +432,19 @@ ${IRSA_CERT_MANAGER_ANNOTATION_KEY_VALUE}
 ${IRSA_EXTERNAL_DNS_ANNOTATION_KEY_VALUE}
 ${KARPENTER_ROLE_ANNOTATION_KEY_VALUE}
 ${NLB_NGX_PUBLIC_ANNOTATION_KEY_VALUE}
-${NOTIFICATION_ENABLED}
-${NOTIFICATION_ENDPOINT}
 ${PF_PROVISIONING_ENABLED}
 ${RADIUS_PROXY_ENABLED}
 ${EXTERNAL_INGRESS_ENABLED}
 ${HEALTHCHECKS_ENABLED}
-${IMAGE_TAG_PREFIX}
 ${ARGOCD_BOOTSTRAP_ENABLED}
 ${ARGOCD_CDE_ROLE_SSM_TEMPLATE}
 ${ARGOCD_CDE_URL_SSM_TEMPLATE}
 ${ARGOCD_ENVIRONMENTS}
 ${ARGOCD_SLACK_TOKEN_BASE64}
 ${SLACK_CHANNEL}
-${OPSGENIE_API_KEY_BASE64}
 ${DASH_REPO_URL}
 ${DASH_REPO_BRANCH}
 ${APP_RESYNC_SECONDS}
-${IMAGE_LIST}
 ${CERT_RENEW_BEFORE}'
 
 # Variables to replace within the generated cluster state code
@@ -747,9 +735,6 @@ echo "Initial DEFAULT_CLUSTER_UPTIME: ${DEFAULT_CLUSTER_UPTIME}"
 echo "Initial SLACK_CHANNEL: ${SLACK_CHANNEL}"
 echo "Initial NON_GA_SLACK_CHANNEL: ${NON_GA_SLACK_CHANNEL}"
 
-echo "Initial IMAGE_LIST: ${IMAGE_LIST}"
-echo "Initial IMAGE_TAG_PREFIX: ${IMAGE_TAG_PREFIX}"
-
 echo "Initial APP_RESYNC_SECONDS: ${APP_RESYNC_SECONDS}"
 
 echo "Initial DASHBOARD_REPO_URL: ${DASHBOARD_REPO_URL}"
@@ -864,9 +849,6 @@ export KARPENTER_ROLE_ANNOTATION_KEY_VALUE=${KARPENTER_ROLE_ANNOTATION_KEY_VALUE
 
 export NLB_NGX_PUBLIC_ANNOTATION_KEY_VALUE=${NLB_NGX_PUBLIC_ANNOTATION_KEY_VALUE:-''}
 
-### Variable used by argocd-image-updater to scan container image tags matching the prefix.
-export IMAGE_TAG_PREFIX="DISABLE"
-
 ### FEATURE FLAG DEFAULTS ###
 export PF_PROVISIONING_ENABLED="${PF_PROVISIONING_ENABLED:-false}"
 export RADIUS_PROXY_ENABLED="${RADIUS_PROXY_ENABLED:-false}"
@@ -880,9 +862,6 @@ export PING_CLOUD_NAMESPACE='ping-cloud'
 export MYSQL_DATABASE="${MYSQL_DATABASE:-pingcentral}"
 export ARGOCD_CDE_ROLE_SSM_TEMPLATE="${ARGOCD_CDE_ROLE_SSM_TEMPLATE:-"${ACCOUNT_PATH_PREFIX}{env}/argo/role/arn"}"
 export ARGOCD_CDE_URL_SSM_TEMPLATE="${ARGOCD_CDE_URL_SSM_TEMPLATE:-"${ACCOUNT_PATH_PREFIX}{env}/cluster/private-link/cname"}"
-
-DEFAULT_IMAGE_LIST="apps=${ECR_REGISTRY_NAME}/pingcloud-apps/pingfederate,apps=${ECR_REGISTRY_NAME}/pingcloud-apps/pingaccess,apps=${ECR_REGISTRY_NAME}/pingcloud-apps/pingaccess-was"
-export IMAGE_LIST="DISABLE"
 
 ALL_ENVIRONMENTS='dev test stage prod customer-hub'
 SUPPORTED_ENVIRONMENT_TYPES="${SUPPORTED_ENVIRONMENT_TYPES:-${ALL_ENVIRONMENTS}}"
@@ -924,16 +903,13 @@ if [[ ${NEW_RELIC_LICENSE_KEY} == "ssm://"* ]]; then
   fi
 fi
 
-OPSGENIE_API_KEY="${OPSGENIE_API_KEY:-PLACEHOLDER}"
-export OPSGENIE_API_KEY_BASE64=$(base64_no_newlines "${OPSGENIE_API_KEY}")
-
 export NEW_RELIC_LICENSE_KEY_BASE64=$(base64_no_newlines "${NEW_RELIC_LICENSE_KEY}")
 
 # Adding an ArgoCD notification slack token
 ARGOCD_SLACK_TOKEN_SSM_PATH="${ARGOCD_SLACK_TOKEN_SSM_PATH:-ssm://pcpt/argocd/notification/slack/access_token}"
 if ! ssm_value=$(get_ssm_value "${ARGOCD_SLACK_TOKEN_SSM_PATH#ssm:/}"); then
   echo "Warn: ${ssm_value}"
-  echo "ARGOCD_SLACK_TOKEN is unset, slack notification and argo-events will not work"
+  echo "ARGOCD_SLACK_TOKEN is unset, slack notifications will not work"
   echo "Using default invalid token"
   ARGOCD_SLACK_TOKEN="using_default_invalid_token"
 else
@@ -1061,9 +1037,6 @@ echo "Using SLACK_CHANNEL: ${SLACK_CHANNEL}"
 echo "Using APP_RESYNC_SECONDS: ${APP_RESYNC_SECONDS}"
 
 echo "Using USER_BASE_DN: ${USER_BASE_DN}"
-
-echo "Using IMAGE_LIST: ${IMAGE_LIST}"
-echo "Using IMAGE_TAG_PREFIX: ${IMAGE_TAG_PREFIX}"
 
 echo "Using DASHBOARD_REPO_URL: ${DASHBOARD_REPO_URL}"
 

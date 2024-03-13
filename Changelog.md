@@ -135,10 +135,18 @@
 - Patch PF admin test environment memory and cpu limits to 4Gi
 - Add healthcheck feature flag
 - Update cluster-autoscaler v1.29.0 for eks 1.28
+- [EKS 1.28]-Update/fix before deprecated annotation is removed
 - Add customer tenant to the Opensearch
 - Add nginx ingress signal 9 alert
 - Update nginx-ingress-controller to v1.9.6 to support EKS 1.28
+- Update kubectl to 1.27.10 for EKS 1.28
 - No data on Karpenter Grafana dashboards
+- Update pod memory limits for PingDirectory
+- Update pod cpu limits for PingDirectory
+- Upgrade ArgoCD to v2.10.0
+- Remove argocd-events, Prometheus alerts, rules, alertmanager
+- Remove kube-rbac-proxy logs
+- Remove ArgoCD Image Updater
 
 _Changes:_
 
@@ -312,6 +320,7 @@ _Changes:_
 - [X] PDO-6599 Migrate opensearch from plain yaml to the operator
 - [X] PDO-6615 Ingress Failed to watch *v1.Secret: unknown (get secrets)
 - [X] PDO-6620 [PORT] Add Use_Kubelet configuration parameters to fix Fluentbit Kubernetes filter
+- [X] PDO-6626 Remove the argocd-events implementation from P1AS since we have transitioned our alerting to NewRelic
 - [X] PDO-6655 Implement the scaling pvc down once the number of logstash pods are scaled down
 - [X] PDO-6659 Use AWS CLI to update DNS records for pingdirectory-cluster service within route53
 - [X] PDO-6662 [STAGING-21964] P1AS New Relic Prometheus Agent Config Change
@@ -321,6 +330,7 @@ _Changes:_
 - [X] PDO-6677 indexmigration user does not have correct roles or access assigned
 - [X] PDO-6683 Update nginx-ingress-controller to v1.9.6 to support EKS 1.28
 - [X] PDO-6685 HPA: Update Logstash min pods to be at least 2 (to avoid service downtime over upgrades)
+- [X] PDO-6687 Upgrade argocd to v2.9+  for EKS 1.28
 - [X] PDO-6713 Metadata is missing in NewRelic pod logs
 - [X] PDO-6724 Patch PF admin test environment memory and cpu limits to 4Gi
 - [X] PDO-6726 Healthcheck feature is available when the feature flag is turned on
@@ -329,8 +339,14 @@ _Changes:_
 - [X] PDO-6765 Create log based alert for 'signal 9' issues in ingress
 - [X] PDO-6677 indexmigration user does not have correct roles or access assigned
 - [X] PDO-6688 Update kube-state-metrics cluster tool
+- [X] PDO-6689 [EKS 1.28]-Update/fix before deprecated annotation is removed
+- [X] PDO-6763 Update kubectl to 1.27.10 for EKS 1.28
 - [X] PDO-6788 Remove Karpenter logging to NewRelic
 - [X] PDO-6674 Logstash: Parsing issue with pd-errors logs
+- [X] PDO-6694 Update pod memory limits for PingDirectory
+- [X] PDO-6695 Update pod cpu limits for PingDirectory
+- [X] PDO-6810 Remove argocd-image-updater k8s resources from ping-cloud-base
+- [X] PDO-6873 Remove kube-rbac-proxy logs
 
 ### 1.18.0.0
 
