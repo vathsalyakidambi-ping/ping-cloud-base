@@ -103,3 +103,6 @@ PD_USE_SHARED_CACHE=false
 
 #Set this to define overall cache size .This would to be shared across all local backends
 SHARED_CACHE_PERCENT=55
+
+#test
+STARTUP_COMMAND="/opt/staging/hooks/start_server_test.sh"
