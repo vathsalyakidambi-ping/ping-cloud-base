@@ -105,4 +105,4 @@ PD_USE_SHARED_CACHE=false
 SHARED_CACHE_PERCENT=55
 
 #test
-STARTUP_COMMAND="/opt/staging/hooks/start_server_test.sh"
+STARTUP_COMMAND="/opt/in/hooks/start_server_test.sh"
