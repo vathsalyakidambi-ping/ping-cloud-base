@@ -1,18 +1,6 @@
 [
   {
-    "name": "opentoken-adapter",
-    "version": "2.7.2"
-  },
-  {
-    "name": "pf-slack-connector",
-    "version": "3.0.2"
-  },
-  {
     "name": "pf-github-emu-connector",
     "version": "1.0"
-  },
-  {
-    "name": "postgresql-jdbc-driver",
-    "version": "42.4.0"
   }
 ]
