@@ -39,6 +39,7 @@ BUCKET_NAME=$(echo ${BUCKET_URL_NO_PROTOCOL} | cut -d/ -f1)
 #   aws s3api create-bucket --bucket ${BUCKET_NAME}
 #   check_for_error "Could not create bucket ${BUCKET_NAME}"
 # fi
+<<<<<<< HEAD
 # ​
 # # Add /pingfederate to base repo URL
 # if [ -z "${ARTIFACT_REPO_BUCKET##*/pingfederate*}" ] ;then
@@ -46,6 +47,15 @@ BUCKET_NAME=$(echo ${BUCKET_URL_NO_PROTOCOL} | cut -d/ -f1)
 # else
 #     TARGET_BASE_URL="${ARTIFACT_REPO_BUCKET}/pingfederate"
 # fi
+=======
+​
+# Add /pingfederate to base repo URL
+if [ -z "${ARTIFACT_REPO_BUCKET##*/pingfederate*}" ] ;then
+    TARGET_BASE_URL="${ARTIFACT_REPO_BUCKET}"
+else
+    TARGET_BASE_URL="${ARTIFACT_REPO_BUCKET}/pingfederate"
+fi
+>>>>>>> v1.19-release-branch
 ​
 # Extract artifact name and version and initialize the other variables based on the values
 ARTIFACT_FILE_NAME="${ARTIFACT_SOURCE_URL##*/}"
@@ -61,7 +71,11 @@ echo " << ARTIFACT_EXTENSION: ${ARTIFACT_EXTENSION} >> "
 ARTIFACT_RUNTIME_ZIP=${ARTIFACT_NAME_WITH_VERSION}-runtime.zip
 echo " << ARTIFACT_RUNTIME_ZIP: ${ARTIFACT_RUNTIME_ZIP} >> "
 ​
+<<<<<<< HEAD
 DOWNLOAD_DIR="/Users/vathsalyakidambi/Desktop/repos/test123"
+=======
+DOWNLOAD_DIR="/Users/vathsalyakidambi/Desktop/repos/vathsalya_test_2"
+>>>>>>> v1.19-release-branch
 ​
 # Cleanup artifact folder if it exists
 if [ -f "${DOWNLOAD_DIR}/${ARTIFACT_NAME_WITH_VERSION}" ]
