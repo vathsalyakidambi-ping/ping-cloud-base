@@ -415,7 +415,7 @@ patches:
         spec:
           initContainers:
           - name: argocd-bootstrap
-            image: public.ecr.aws/r2h3l6e4/pingcloud-services/argocd-bootstrap/dev:v2.0-release-branch-latest
+            image: 705370621539.dkr.ecr.us-west-2.amazonaws.com/pingcloud-services/argocd-bootstrap:pdo-6736-new
             imagePullPolicy: Always
             envFrom:
               - configMapRef:
