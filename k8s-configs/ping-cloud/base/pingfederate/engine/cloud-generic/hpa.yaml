@@ -21,4 +21,4 @@ spec:
       policies:
         type: Pods
         value: 1
-  periodSeconds: 5
+periodSeconds: 5
