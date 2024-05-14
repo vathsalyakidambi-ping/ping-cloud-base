@@ -9,7 +9,6 @@ spec:
     apiVersion: apps/v1
     kind: StatefulSet
     name: pingfederate
-  targetCPUUtilizationPercentage: 70
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 60
