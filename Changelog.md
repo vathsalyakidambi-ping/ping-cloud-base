@@ -1,35 +1,13 @@
-v1.19.0.0
+### 1.19.1.0
 
-# Ping Identity Products
+_Changes:_
 
-**_[Key Features]_**
+- [X] PDO-5864 Add job and secret for connection between customer PingOne and shared PingOne
+- [X] PDO-6332 Remove all thread count limits from PingDirectory
+- [X] PDO-6661 Remove Cronjob / Job for PingDataSync
+- [X] PDO-7238 Remove KMS Init Container from PingDirectory
+- [X] PDO-7394 Remove Grafana dashboards from secondary region
+- [X] PDO-7456 Upgrade Karpenter to 0.37.0
+- [X] PDO-7528 Making Graviton as default for NON-GA environment, fix GA consistency across envs
+- [X] PDO-7548 Add 'source cluster' identifier to graphs legend for Volume Autoscaler dashboard 
 
-- PingDirectory Improvements
-- Support PingDirectory multiple backends to share database cache
-
-**_[Deploys With]_**
-
-- PingAccess to v8.0.1
-- PingCentral to v2.0.1
-- PingDataSync to v10.0.0.1
-- PingDelegator to v5.0.0
-- PingDirectory to v10.0.0.2
-- PingFederate to v11.3.5
-
-# Observability and Monitoring
-
-**_[Key Features]_**
-
-- Replace Elasticsearch with OpenSearch
-
-# Specific Solutions
-
-**_[Key Features]_**
-
-- P1AS One Ping Login - Phase 1
-
-# Platform and Underlying Tools
-
-**_[Key Features]_**
-
-- Graviton ARM Instances Deployment with Karpenter
