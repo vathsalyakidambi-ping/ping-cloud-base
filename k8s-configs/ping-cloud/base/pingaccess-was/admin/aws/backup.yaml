@@ -15,7 +15,8 @@ spec:
       restartPolicy: Never
       containers:
       - name: pingaccess-was-backup
-        image: 705370621539.dkr.ecr.us-west-2.amazonaws.com/pingcloud-apps/pingaccess-was:pdo-7396        imagePullPolicy: Always
+        image: 705370621539.dkr.ecr.us-west-2.amazonaws.com/pingcloud-apps/pingaccess-was:pdo-7396        
+        imagePullPolicy: Always
         securityContext:
           runAsGroup: 9999
           runAsNonRoot: true
