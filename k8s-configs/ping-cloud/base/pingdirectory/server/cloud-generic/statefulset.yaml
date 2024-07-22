@@ -170,7 +170,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 9031
             allowPrivilegeEscalation: false
-          image: public.ecr.aws/r2h3l6e4/pingcloud-apps/pingdirectory/dev:v2.0-release-branch-latest
+          image: 705370621539.dkr.ecr.us-west-2.amazonaws.com/pingcloud-apps/pingdirectory:pdo-7731
           imagePullPolicy: Always
           ports:
             - containerPort: 1389
@@ -295,12 +295,13 @@ spec:
             timeoutSeconds: 5
           startupProbe:
             exec:
-              command: ["sh", "-c", "echo 'Finished delaying PingDirectory by 180s using startupProbe'"]
+              command:
+                - /opt/staging/hooks/02-skip-liveness.sh
             # Do not start the startup probe for 3 minutes after starting the
             # container because PD will never finish its start/restart sequence
             # before then, in practice. Run the startup probe every 5 seconds
             # and tolerate up to 100 failures, so PD will be marked as ready as far as it really be ready
-            initialDelaySeconds: 180
+            # initialDelaySeconds: 180
             periodSeconds: 5
             failureThreshold: 100
             timeoutSeconds: 5
