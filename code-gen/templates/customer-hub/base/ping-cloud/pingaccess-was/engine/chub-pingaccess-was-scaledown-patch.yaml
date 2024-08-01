@@ -2,14 +2,17 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: pingaccess-was
-$patch: delete
+  namespace: ping-cloud
+spec:
+  replicas: 2
 
 ---
 
+$patch: delete
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: pingaccess-was
-$patch: delete
+  namespace: ping-cloud
 
 ---
