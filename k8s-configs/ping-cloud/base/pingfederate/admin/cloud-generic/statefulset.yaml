@@ -29,26 +29,26 @@ spec:
     spec:
       serviceAccountName: pingfederate-admin-serviceaccount
       initContainers:
-      - name: pingfederate-p1as-sso
-        securityContext:
-          runAsGroup: 9999
-          runAsNonRoot: true
-          runAsUser: 9031
-          allowPrivilegeEscalation: false
-        image: public.ecr.aws/r2h3l6e4/pingcloud-services/p14c-integration/dev:v2.0-release-branch-latest
-        imagePullPolicy: Always
-        env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        envFrom:
-          - configMapRef:
-              name: pingfederate-admin-environment-variables
-        command:
-          - /bin/sh
-          - -c
-          - python3 -u /app/oauth_client_services_controller.py --app pingfederate
+      # - name: pingfederate-p1as-sso
+      #   securityContext:
+      #     runAsGroup: 9999
+      #     runAsNonRoot: true
+      #     runAsUser: 9031
+      #     allowPrivilegeEscalation: false
+      #   image: public.ecr.aws/r2h3l6e4/pingcloud-services/p14c-integration/dev:v2.0-release-branch-latest
+      #   imagePullPolicy: Always
+      #   env:
+      #   - name: NAMESPACE
+      #     valueFrom:
+      #       fieldRef:
+      #         fieldPath: metadata.namespace
+      #   envFrom:
+      #     - configMapRef:
+      #         name: pingfederate-admin-environment-variables
+      #   command:
+      #     - /bin/sh
+      #     - -c
+      #     - python3 -u /app/oauth_client_services_controller.py --app pingfederate
       - name: pingfederate-init
         securityContext:
           runAsGroup: 9999
