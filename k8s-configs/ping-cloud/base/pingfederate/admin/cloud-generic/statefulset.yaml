@@ -207,9 +207,9 @@ spec:
         - secretRef:
             name: newrelic-license-key
             optional: false
-        - secretRef:
-            name: pingfederate-admin-p14c
-            optional: false
+        # - secretRef:
+        #     name: pingfederate-admin-p14c
+        #     optional: false
         resources:
           requests:
             memory: "4Gi"
