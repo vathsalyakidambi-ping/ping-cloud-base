@@ -513,6 +513,10 @@ pf.runtime.threads.max=${PF_JETTY_THREADS_MAX}
 pf.admin.acceptQueueSize=512
 pf.runtime.acceptQueueSize=512
 
+#   Log4j 2 Settings
+#   ---------------------------
+log4j2.formatMsgNoLookups=true
+
 #
 # HTTP Server Request Handling Settings
 # -------------------------------------
