@@ -153,7 +153,7 @@ oidc.properties.file=oidc.properties
 #
 # When OAuth 2.0 administrative-API authentication is enabled, this property
 # indicates the name of the file containing configuration properties.
-oauth2.properties.file=oauth2.properties
+#oauth2.properties.file=oauth2.properties
 
 
 # -------------------------
