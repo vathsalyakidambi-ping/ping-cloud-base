@@ -48,7 +48,7 @@
 #
 #   This client represents the PingFederate administrative console and is created and managed at the OP.
 #
-client.id=
+client.id=${PF_OIDC_CLIENT_ID}
 
 #   -----------------------------
 #   Client Authentication Type (REQUIRED)
@@ -83,6 +83,7 @@ client.authn.method=
 #   Copy complete result into property value, as shown in the example below:
 #     client.secret=OBF:JWE:eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2Iiwia2lkIjoiVEU0dVZjcU1wayIsInZlcnNpb24iOiI3LjEuMjAwLjQtU05BUFNIT1QifQ..8Zf_xQ4PuXuYkdE0culPpA.E2Lh_zAne5YpaJo9wbl39A.Z8wVd6SFB8lcQbvutU1u-Q
 #
+#   Keep 'client.secret' empty as it will be replaced by P1AS automation by injecting the obfuscated variable of PF_OIDC_CLIENT_SECRET
 #   This property can also be specified as a secret reference in the form OBF:MGR:{secretManagerId}:{secretId}.
 #       To use this form, a secret manager plugin must be configured.
 #       Secret manager plugins usually include a custom action to help with constructing secret references.
@@ -100,7 +101,7 @@ enable.proof.key.code.exchange=false
 #   Authorization Endpoint (REQUIRED)
 #   -----------------------------
 #   The full HTTPS URL of authorization endpoint at the OP.
-authorization.endpoint=
+authorization.endpoint=${PF_OIDC_AUTHORIZATION_ENDPOINT}
 
 #   -----------------------------
 #   Pushed Authorization Request Endpoint (OPTIONAL)
@@ -113,13 +114,13 @@ pushed.authorization.request.endpoint=
 #   Token Endpoint (REQUIRED)
 #   -----------------------------
 #   The full HTTPS URL of token endpoint at the OP. This is required as PingFederate OIDC login only supports the authorization code flow.
-token.endpoint=
+token.endpoint=${PF_OIDC_TOKEN_ENDPOINT}
 
 #   -----------------------------
 #   UserInfo Endpoint (OPTIONAL)
 #   -----------------------------
 #   The full HTTPS URL of UserInfo endpoint. This endpoint will be accessed when the required claims are not present in the ID tokens.
-user.info.endpoint=
+user.info.endpoint=${PF_OIDC_USER_INFO_ENDPOINT}
 
 #   -----------------------------
 #   End Session Endpoint (OPTIONAL)
@@ -127,26 +128,26 @@ user.info.endpoint=
 #   The full URL of end session endpoint at the OP. When this property does not have a value,
 #   the administrator shall be shown the default PingFederate administrative console logout page.
 #
-end.session.endpoint=
+end.session.endpoint=${PF_OIDC_END_SESSION_ENDPOINT}
 
 #   -----------------------------
 #   Issuer (REQUIRED)
 #   -----------------------------
 #   The Issuer Identifier of the OP. The value provided here will be matched with the iss claims in the obtained ID token.
-issuer=
+issuer=${PF_OIDC_ISSUER}
 
 #   -----------------------------
 #   Authentication Context Class Reference Values (OPTIONAL)
 #   -----------------------------
 #   The Authentication Context Class Reference Values which shall be used by OP. Multiple values must be space separated.
-acr.values=
+acr.values=${PF_OIDC_ACR_VALUES}
 
 #   -----------------------------
 #   Scopes (REQUIRED)
 #   -----------------------------
-#   Requesting Scopes from OP. Include all the scopes required to obtain username and role mapping attributes. Multiple values must be space separated.
-scopes=openid
-
+#   Requesting Scopes from OP. Include all the scopes required to obtain username and role mapping attributes.
+#scopes=openid
+scopes=${PF_OIDC_SCOPES}
 
 #   ----------------------------------
 #   Username Attribute Name (REQUIRED)
@@ -154,7 +155,8 @@ scopes=openid
 #   The name of the claim in the ID token or UserInfo response that contains the username of the administrator. The value of the
 #   username claim is used in administrative audit logs.
 #
-username.attribute.name=sub
+#username.attribute.name=sub
+username.attribute.name=${PF_OIDC_USERNAME_ATTRIBUTE_NAME}
 
 #   ------------------------------
 #   Role Attribute Name (REQUIRED)
@@ -164,7 +166,7 @@ username.attribute.name=sub
 #   Example:
 #     role.attribute.name=admin_role
 #
-role.attribute.name=
+role.attribute.name=${PF_OIDC_ROLE_ATTRIBUTE_NAME}
 
 #   -------------------------------------
 #   Administrator Role Mapping (REQUIRED)
@@ -193,19 +195,18 @@ role.attribute.name=
 #     role.admin.2=
 #     role.admin.3=
 #
-role.admin=
-role.cryptoManager=
-role.userAdmin=
+role.admin=${PF_OIDC_ROLE_ADMIN}
+role.cryptoManager=${PF_OIDC_ROLE_CRYPTOMANAGER}
+role.userAdmin=${PF_OIDC_ROLE_USERADMIN}
 
 # The expressionAdmin role must only be granted to the administrators with admin role.
-role.expressionAdmin=
+role.expressionAdmin=${PF_OIDC_ROLE_EXPRESSIONADMIN}
 
 #   -----------------------------------------------
 #   Auditor Role Attribute Value Mapping (OPTIONAL)
 #   -----------------------------------------------
 #   The auditor role overrides the privileges associated with the assignment of any other role for the same caller.
 #
-role.auditor=
 
 #   -----------------------------
 #   Request Parameters (OPTIONAL)

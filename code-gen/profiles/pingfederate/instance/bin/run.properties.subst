@@ -11,7 +11,7 @@
 #
 # This property defines the port on which the PingFederate administrative 
 # console and API runs. Default is 9999.
-pf.admin.https.port=9999
+pf.admin.https.port=${PF_ADMIN_PORT}
 
 # This property defines the URL that PingFederate's administrative node will use
 # to populate resource references in Administrative API responses
@@ -24,7 +24,7 @@ pf.admin.https.port=9999
 # if pf.admin.baseurl is specified. But if only pf.admin.hostname is defined,
 # then the URL will be constructed the same way as in versions of PingFederate
 # before 10.3.
-pf.admin.baseurl=
+pf.admin.baseurl=https://${PF_ADMIN_PUBLIC_HOSTNAME}:443
 
 #
 # This property defines the IP address over which the PingFederate 
@@ -38,13 +38,13 @@ pf.console.bind.address=0.0.0.0
 #   ---------------
 # This property defines the browser window or tab title for the administrative 
 # console, used to make separate instances identifiable.
-pf.console.title=PingFederate
+pf.console.title=${PF_ADMIN_CONSOLE_TITLE}
 
 #
 # This property defines the name of the PingFederate environment that will be
 # displayed in the administrative console, used to make separate environments
 # easily identifiable.
-pf.console.environment=
+pf.console.environment=${PF_ADMIN_CONSOLE_ENVIRONMENT}
 
 #   HTML page background image
 #   ---------------
@@ -101,7 +101,7 @@ pf.console.login.mode=multiple
 #     RADIUS - External RADIUS authentication.
 #     OIDC   - External or Internal OIDC authentication.
 # Default is native.
-pf.console.authentication=native
+pf.console.authentication=${PF_CONSOLE_AUTHENTICATION}
 
 # Authentication methods for the Admin API.
 #   Valid values are:
@@ -128,7 +128,7 @@ pf.console.authentication=native
 #      PingFederate will fail on startup.
 # Please find the documentation for details about using multiple authentication
 # sources.
-pf.admin.api.authentication=native
+pf.admin.api.authentication=LDAP
 
 #
 # When LDAP administrative-console authentication is enabled, this property 
@@ -254,7 +254,7 @@ pf.runtime.http.maxRequestBodySize=200000
 # Note: Only one node in a cluster can run the administrative console unless
 # the active/passive administrative console feature is enabled.
 # Default is STANDALONE.
-pf.operational.mode=STANDALONE
+pf.operational.mode=$OPERATIONAL_MODE
 
 # The following properties apply only if "pf.operational.mode"
 # is *not* STANDALONE:
@@ -262,6 +262,7 @@ pf.cluster.node.index=
 # A strong, randomly-generated key (22 or more alphanumerics) is recommended.
 # In BCFIPS mode, if encryption is enabled, the minimum length of 22
 # characters is enforced.
+# Keep 'pf.cluster.auth.pwd' empty as it will be replaced by P1AS automation by injecting the obfuscated variable of PF_CLUSTER_AUTH_PASSWORD
 pf.cluster.auth.pwd=
 pf.cluster.encrypt=false
 
@@ -388,7 +389,7 @@ pf.fips.additional.allowed.providers=
 # When only one server is in use, set the value to STANDALONE. 
 # When more than one server is in use and failover is desired, 
 # set the value to FAILOVER for each server.
-pf.provisioner.mode=OFF
+pf.provisioner.mode=${PF_PROVISIONER_MODE}
 
 # In failover mode, each node must have a unique ID. The lower the node ID, the
 # higher the priority for that node (only one server can actively handle provisioning
@@ -398,7 +399,7 @@ provisioner.node.id=
 
 # Grace period, in seconds, after which a node is considered dead and failover
 # occurs. This value should be larger than the provisioning-frequency cycle.
-provisioner.failover.grace.period=600
+provisioner.failover.grace.period=${PF_PROVISIONER_GRACE_PERIOD}
 
 #   Jetty Customization Properties
 #   ---------------------------
@@ -499,10 +500,10 @@ pf.tls.admin.server.protocols=TLSv1.2,TLSv1.3
 # The following properties control the minimum and the maximum number of threads used to configure PingFederate thread pools.
 #
 # Please refer to the performance tuning guide for further tuning guidance.
-pf.admin.threads.min=1
-pf.admin.threads.max=10
-pf.runtime.threads.min=10
-pf.runtime.threads.max=200
+pf.admin.threads.min=${PF_JETTY_THREADS_MIN}
+pf.admin.threads.max=${PF_JETTY_THREADS_MAX}
+pf.runtime.threads.min=${PF_JETTY_THREADS_MIN}
+pf.runtime.threads.max=${PF_JETTY_THREADS_MAX}
 
 #   HTTP Connector Queue Size Settings
 #   ----------------------------------
