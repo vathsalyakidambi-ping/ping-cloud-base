@@ -81,11 +81,11 @@ client.id=${PF_OIDC_CLIENT_ID}
 #   Copy complete result into property value, as shown in the example below:
 #     client.secret=OBF:JWE:eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2Iiwia2lkIjoiVEU0dVZjcU1wayIsInZlcnNpb24iOiI3LjEuMjAwLjQtU05BUFNIT1QifQ..8Zf_xQ4PuXuYkdE0culPpA.E2Lh_zAne5YpaJo9wbl39A.Z8wVd6SFB8lcQbvutU1u-Q
 #
-#   Keep 'client.secret' empty as it will be replaced by P1AS automation by injecting the obfuscated variable of PF_OIDC_CLIENT_SECRET
 #   This property can also be specified as a secret reference in the form OBF:MGR:{secretManagerId}:{secretId}.
 #       To use this form, a secret manager plugin must be configured.
 #       Secret manager plugins usually include a custom action to help with constructing secret references.
 #       Note: the client ID which may be returned by the secret manager is ignored.
+#   Keep 'client.secret' empty as it will be replaced by P1AS automation by injecting the obfuscated variable of PF_OIDC_CLIENT_SECRET
 client.secret=
 
 #   ------------------------------------
