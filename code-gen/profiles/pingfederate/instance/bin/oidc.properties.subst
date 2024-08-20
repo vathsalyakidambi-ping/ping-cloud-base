@@ -208,7 +208,7 @@ role.expressionAdmin=${PF_OIDC_ROLE_EXPRESSIONADMIN}
 #   -----------------------------------------------
 #   The auditor role overrides the privileges associated with the assignment of any other role for the same caller.
 #
-
+role.auditor=${PF_OIDC_ROLE_AUDITOR}
 #   -----------------------------
 #   Request Parameters (OPTIONAL)
 #   -----------------------------

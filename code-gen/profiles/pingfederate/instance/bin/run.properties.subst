@@ -396,7 +396,7 @@ pf.provisioner.mode=${PF_PROVISIONER_MODE}
 # higher the priority for that node (only one server can actively handle provisioning
 # at one time). If this property is left blank, the cluster node index will be used
 # as the provisioner node id.
-provisioner.node.id=
+provisioner.node.id=${PF_PROVISIONER_NODE_ID}
 
 # Grace period, in seconds, after which a node is considered dead and failover
 # occurs. This value should be larger than the provisioning-frequency cycle.
