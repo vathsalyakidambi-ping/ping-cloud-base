@@ -61,7 +61,7 @@ client.id=${PF_OIDC_CLIENT_ID}
 #    private_key_jwt       - Client authenticates in accordance with RFC 7523. Public keys to enable the OP to perform client authentication
 #                            by validating JWT signatures is published at the PingFederate runtime JWKS endpoint (e.g.: https://www.example.com:9031/pf/JWKS).
 #
-
+client.authn.method=${PF_OIDC_CLIENT_AUTHN_METHOD}
 #   ----------------------------------------------------
 #   Client Secret (OPTIONAL)
 #   ----------------------------------------------------
