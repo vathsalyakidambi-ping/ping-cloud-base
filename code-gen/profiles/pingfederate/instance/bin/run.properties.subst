@@ -222,7 +222,8 @@ pf.runtime.context.path=/
 # This property enables detailed event logging where changes to the components are logged. 
 # Default is false
 #
-pf.log.eventdetail=false
+# Setting pf.log.eventdetail=true , which will log diffs of admin console and admin API changes 
+pf.log.eventdetail=true
 
 #
 # This property enables detailed system monitoring information to be made available 
