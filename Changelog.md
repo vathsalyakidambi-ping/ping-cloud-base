@@ -19,13 +19,16 @@ _Changes:_
 - [X] PDO-7606 Updated Fluent Bit resource to successfully flush records when under minimal load 
 - [X] PDO-7570 Logstash: Update config to include K8s resource labels
 - [X] PDO-7703 Logstash: Revisit PodDisruptionBudget
-- [X] PDO-7725:Implementing PDO-7558 Karpenter Cost saving changes
 - [X] PDO-7742 NewRelic: Optimize Metric Collection by Removing Unnecessary Data Points
 - [X] PDO-7759 Increase NR interval to 30s
 - [X] PDO-7768 Add customer-defined name to external IdP
 - [X] PDO-7772 Nginx ocsp integration test in ping-cloud-base causing instability
 - [X] PDO-7788 customer-p1-connection job suspension prevents ArgoCD app healthy status
 - [X] PDO-7789 Obfuscate client secret within oidc.properties.subst for PingFederate
+- [X] PDO-7804 Create aggregate handler to support pluggable pass-through authentication plugins
 - [X] PDO-7805 Remove application/node logs from CloudWatch
 - [X] PDO-7806 added additional labels in logstash config
+- [X] PDO-8072 ingress-nginx to use topologySpreadConstaints
+- [X] PDO-8071 Remove Logstash pipelines for Newrelic
 - [X] PDO-8128 Correct sample patch for Pingaccess-WAS engine HPA min/max replicas
+- [X] PDO-8164 OpenSearch: Implement Version 2.11.1
