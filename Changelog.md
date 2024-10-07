@@ -1,3 +1,11 @@
+### 1.19.2.0
+
+_Changes:_
+
+- [X] PDO-8355 Cronjob delete Job and PersistentVolumeClaim resources for PingDirectory backups
+- [X] PDO-8363 OpenSearch: Add the Fluent Bit ingestion time field
+
+
 ### 1.19.1.0
 
 _Changes:_
@@ -32,3 +40,4 @@ _Changes:_
 - [X] PDO-8071 Remove Logstash pipelines for Newrelic
 - [X] PDO-8128 Correct sample patch for Pingaccess-WAS engine HPA min/max replicas
 - [X] PDO-8164 OpenSearch: Implement Version 2.11.1
+- [X] PDO-8190 Update to include ingresses metrics
