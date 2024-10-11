@@ -1155,7 +1155,7 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
       esac
     fi
   fi
-  export LETS_ENCRYPT_SERVER="${LETS_ENCRYPT_SERVER}"
+  export LETS_ENCRYPT_SERVER="${PROD_LETS_ENCRYPT_SERVER}"
 
   # Set PF variables based on ENV
   if echo "${LETS_ENCRYPT_SERVER}" | grep -q 'staging'; then
