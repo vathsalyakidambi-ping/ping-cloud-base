@@ -12,13 +12,6 @@ environment-metadata:
   values_container_key: information.json
   ssm_type: json
   ssm_path_prefix: CUSTOMER_SSO_SSM_PATH_PREFIX
-customer-id:
-  kind: ConfigMap
-  name: customer-id
-  template:
-  values_container_key: id
-  ssm_type: string
-  ssm_path_prefix: CUSTOMER_SSM_PATH_PREFIX
 davinci-configuration:
   kind: Secret
   name: davinci-configuration
