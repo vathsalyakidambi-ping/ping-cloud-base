@@ -1199,7 +1199,7 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
 
   # Update the Let's encrypt server to use staging/production based on GA customers or the environment type.
   PROD_LETS_ENCRYPT_SERVER='https://acme-v02.api.letsencrypt.org/directory'
-  STAGE_LETS_ENCRYPT_SERVER='https://acme-staging-v02.api.letsencrypt.org/directory'
+  STAGE_LETS_ENCRYPT_SERVER='https://acme-v02.api.letsencrypt.org/directory'
 
   if test ! "${LETS_ENCRYPT_SERVER}"; then
     if "${IS_GA}"; then
