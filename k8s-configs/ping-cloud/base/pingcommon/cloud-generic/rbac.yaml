@@ -97,6 +97,13 @@ rules:
     - endpoints
     verbs:
     - get
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
 
 ---
 
