@@ -1,0 +1,137 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: pd-cmds-
+spec:
+  serviceAccountName: ping-serviceaccount
+  entrypoint: pd-cmds # What first task/template you will run
+  templates:
+    - name: pd-cmds
+      steps:
+        - - name: restoring-pingdirectory
+            template: wait-for-all-pods-to-start
+            arguments:
+              parameters:
+                - name: pingdirectory_pod_name
+                  value: "pingdirectory-0"
+
+        - - name: pingdirectory-server-status-after-restore
+            template: run-kubectl
+            arguments:
+              parameters:
+                - name: server
+                  value: "pingdirectory-0"
+                - name: cmd
+                  value: "status"
+
+        - - name: wait-for-the-other-pingdirectory-servers-to-start
+            template: wait-for-all-pods-to-start
+            arguments:
+              parameters:
+                - name: pingdirectory_pod_name
+                  value: "{{item}}"
+            withParam: "{{steps.get-pods.outputs.parameters.pods-list}}"
+
+        - - name: dsreplication-status
+            template: run-kubectl
+            arguments:
+              parameters:
+                - name: server
+                  value: "{{item}}"
+                - name: cmd
+                  value: "dsreplication status"
+            withParam: "{{steps.get-pods.outputs.parameters.pods-list}}"
+
+        - - name: set-argo-workflow-configmap
+            template: set-argo-workflow-configmap
+            arguments:
+              parameters:
+                - name: argo_workflow_type
+                  value: ""
+
+    - name: run-kubectl
+      inputs:
+        parameters:
+          - name: cmd
+          - name: server
+      container:
+        image: bitnami/kubectl:latest  # kubectl pre-installed
+        command: [sh, -c]
+        args: ["kubectl exec -n ping-cloud -c pingdirectory {{inputs.parameters.server}} -- {{inputs.parameters.cmd}} > /tmp/result.txt; cat /tmp/result.txt"]
+        #args: ["kubectl exec pingdirectory-0 -c pingdirectory -n ping-cloud -- sh -c status | grep 'Operational Status'"]
+      outputs:
+        parameters:
+          - name: result
+            valueFrom:
+              path: /tmp/result.txt
+
+    - name: get-pods
+      container:
+        image: bitnami/kubectl:latest  # kubectl pre-installed
+        command: [sh, -c]
+        args: [ "PODS=$(kubectl get pods -l class=pingdirectory-server -n ping-cloud -o  jsonpath='{.items[*]}'| jq '.metadata.name');echo '['$(echo $PODS | sed 's/ /,/g')']' > /tmp/pods.json" ]
+      outputs:
+        parameters:
+          - name: pods-list
+            valueFrom:
+              path: /tmp/pods.json
+
+    - name: wait-for-all-pods-to-start
+      container:
+        image: bitnami/kubectl:latest  # kubectl pre-installed
+        command: [ sh, -c ]
+        args:
+          - |
+            is_pod_ready=false
+            while [ "${is_pod_ready}" != "true" ]; do
+              is_pod_ready=$(kubectl get pod {{inputs.parameters.pingdirectory_pod_name}} -n ping-cloud -o jsonpath='{.status.containerStatuses[*].ready}')
+              echo "Waiting for {{inputs.parameters.pingdirectory_pod_name}} to be ready..."
+              sleep 2
+            done
+            echo "{{inputs.parameters.pingdirectory_pod_name}} is ready!"
+      inputs:
+        parameters:
+          - name: pingdirectory_pod_name
+
+    - name: set-argo-workflow-configmap
+      container:
+        image: bitnami/kubectl:latest  # kubectl pre-installed
+        command: [ sh, -c ]
+        args: ["kubectl patch configmap argo-workflow-operator --type merge -p '{\"data\":{\"ARGO_WORKFLOW\":\"{{inputs.parameters.argo_workflow_type}}\"}}' -n ping-cloud" ]
+      inputs:
+        parameters:
+          - name: argo_workflow_type
+        
+        
+        
+        kubectl exec -n ping-cloud -c pingdirectory {{inputs.parameters.server}} -- {{inputs.parameters.cmd}} > /tmp/result.txt; cat /tmp/result.txt"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+task1:
+  Argo workflow will wait for restore and when pods are available running
+  - How, by simply analying the k8s readiness probe. We'll wait for pod ready status 2/2. Or some useful k8s get pod status command
+  - Nice to have, while waiting more commands to verify that pod is restoring properly
+  Is it possible to print out the:
+    - server state
+    - restore task logs
+task2:
+  Argo workflow will then run 'status' command to see the pingDirectory-0 status
+
+task3:
+  Argo will wait for all/other POD replicas to be ready and available. Probably can reuse task1 step 'ready status'
+  Note:
+    Argo Workflow doesn't have to do anything w/ restoe b/c our automation will run dsreplication initialize on its own
+task4:
+  Run rest of Vathsalya's workflows 'dsreplication status' and status commands on 'all pods'
