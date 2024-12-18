@@ -18,9 +18,9 @@ helmCharts:
       - ../../values-files/${REGION_NICK_NAME}/values.yaml   # regional values.yaml
       - values.yaml   # app specific values.yaml
     valuesInline:
-      ecrRegistryName: "705370621539.dkr.ecr.us-west-2.amazonaws.com/dev"
+      ecrRegistryName: "705370621539.dkr.ecr.us-west-2.amazonaws.com/dev/p1as-pingdirectory"
     version: v2.0-hackathon-2024-argo-wf
-    repo: oci://705370621539.dkr.ecr.us-west-2.amazonaws.com/dev
+    repo: oci://705370621539.dkr.ecr.us-west-2.amazonaws.com/dev/p1as-pingdirectory
 
 ### This field is used to trigger a resync of the p1as-pingdirectory helm chart ###
 configMapGenerator:
