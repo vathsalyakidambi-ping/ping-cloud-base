@@ -1,0 +1,70 @@
+#pingfederatre application settings
+pingfederate:
+  radiusProxyEnabled: false
+  podReaperEnabled: "enabled"
+  serverProfilePath: "profiles/pingfederate"
+  ingress:
+    enableExternalIngress: false
+    pingfederateAdmin:
+      ingressClassName: "nginx-private"
+    pingfederateEngine:
+      ingressClassName: "nginx-public"
+  statefulSet:
+    lastUpdateReason: "NA"
+    # Set container limits for the pingfederate engine deployment
+    pingfederateAdmin:
+      replicas: "1"
+      resources:
+        limits:
+          memory: "4Gi"
+          cpu:  "1"
+        requests:
+          memory: "4Gi"
+          cpu: "1"   
+    # Set container limits for the pingfederate engine deployment
+    pingfederateEngine:
+      replicas: "2"
+      resources:
+        requests:
+          memory: "4Gi"
+          cpu: 2
+        limits:
+          memory: "4Gi"
+          cpu: 2
+      podDisruptionBudget: 
+        minAvailable: "30%"
+      hpa:
+        minReplicas: 2
+        maxReplicas: 2
+        averageUtilization: 70
+      pingfederateHeartbeatExporter:
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "100m"
+          limits:
+            memory: "300Mi"
+            cpu: "100m"
+      pingcloudRadsecproxy:
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "200m"
+          limits:
+            memory: "500Mi"
+            cpu: "400m"
+    # Persistent volume size configuration.
+  persistentVolume:
+    pingfederateAdmin:
+      size: 20Gi
+      # Storage provisioner configuration for managing the persistent volume.
+      storageProvisioner: "ebs.csi.aws.com"
+      # File system type configuration for the persistent volume.
+      fsType: "ext4"
+      # Storage type configuration for the persistent volume.
+      storageType: "gp3"
+  kubectlVersion: "v1.30.4"
+  license:
+    # Only use if you want to provide your own SSM path to perpetual license
+    # The default is that automation will determine SSM path to retrieve product license
+    overrideProductLicense: ""
