@@ -2,7 +2,7 @@
 
 # If VERBOSE is true, then output line-by-line execution
 "${VERBOSE:-false}" && set -x
-"${EXIT_ON_FAILURE:-false}" && set -e
+"${EXIT_ON_FAILURE:-true}" && set -e
 
 ########################################################################################################################
 #
@@ -455,6 +455,7 @@ ${EXTERNAL_INGRESS_ENABLED}
 ${HEALTHCHECKS_ENABLED}
 ${CUSTOMER_PINGONE_ENABLED}
 ${ARGOCD_BOOTSTRAP_ENABLED}
+${CLOUDWATCH_ENABLED}
 ${ARGOCD_CDE_ROLE_SSM_TEMPLATE}
 ${ARGOCD_CDE_URL_SSM_TEMPLATE}
 ${ARGOCD_ENVIRONMENTS}
@@ -1313,6 +1314,17 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
   export PGO_BACKUP_BUCKET_NAME=${PGO_BACKUP_BUCKET_NAME#s3://}
 
 
+  ######################################################################################################################
+  # Enable Cloudwatch according to the account type
+  ######################################################################################################################
+
+  if test "${CI_SERVER}" != "yes" && test "${ACCOUNT_TYPE}" = "non-ga"; then
+    echo "Cloudwatch is disabled"
+    export CLOUDWATCH_ENABLED="false"
+  else
+    echo "Cloudwatch is enabled"
+    export CLOUDWATCH_ENABLED="true"
+  fi
 
   ######################################################################################################################
   # Print out the final value being used for each environment specific variable.
@@ -1335,6 +1347,8 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
   echo "Using CLUSTER_ENDPOINT: ${CLUSTER_ENDPOINT}"
   echo "Using TELEPORT_RESOURCE_ID: ${TELEPORT_RESOURCE_ID}"
   echo "Using STAGE: ${STAGE}"
+  echo "Using CLOUDWATCH_ENABLED: ${CLOUDWATCH_ENABLED}"
+
 
   ######################################################################################################################
   # Massage files into correct structure for push-cluster-state script
@@ -1449,12 +1463,6 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
     printf "\n# %%%% END automatically appended secrets from generate-cluster-state.sh\n" >> "${K8S_CONFIGS_DIR}/base/secrets.yaml"
   fi
 
-  # Disable CW if non-GA
-  if test "${CI_SERVER}" != "yes" && test "${ACCOUNT_TYPE}" = "non-ga"; then
-    sed -i.bak 's/^[[:space:]]*#[[:space:]]*\(.*disable-cloudwatch.yaml\)$/  \1/g' "${PRIMARY_PING_KUST_FILE}"
-  fi
-  rm -f "${PRIMARY_PING_KUST_FILE}.bak"
-
   echo "Substituting env vars, this may take some time..."
   substitute_vars "${ENV_DIR}" "${REPO_VARS}" secrets.yaml env_vars
 
@@ -1530,6 +1538,11 @@ for ENV_OR_BRANCH in ${SUPPORTED_ENVIRONMENT_TYPES}; do
 
   echo "=====> Done creating environment '${ENV}'"
 )
+subshell_exit_code=$?
+if [[ $subshell_exit_code -ne 0 ]]; then
+    echo "Environment '${ENV}' creation failed with exit code ${subshell_exit_code}"
+    exit $subshell_exit_code
+fi
 done
 
 cp -p push-cluster-state.sh "${TARGET_DIR}"

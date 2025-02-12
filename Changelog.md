@@ -7,25 +7,36 @@
 - Reconcile Grafana differences with p1as-observability
 - Kustomize: Fix kustomizations to not be completely empty in order to support v5.1+
 - Enable consolidation for default nodepool and add multiple instance type
-- Remove helm-command.sh shim workaround
 - Upgrade Kustomize to 5.5.0
+- Integrate init-container to use perpetual license
 - Enable default ingress object to accept LDAPS traffic through Nginx Private
 - Add self-service URL to env_vars
 - Removing value for newrelic-tags-exporter image and hardcoding in statefulset manifests
+- Added p1as-observability and cloudwatch deployment to pcb
+- Removed the warm node pool and its associated opensearch-sc1 StorageClass
+- Cost Savings: NGINX  (public and private): Reduce CPU and mem requests
+- Properly handle failures for cluster-state and profile-repo scripts
+- Add volume mounts for PA admin and engines for pingaccess-admin-p14c secret
 
 _Changes:_
 
+- [X] PDO-4383 Configure PA Admin API to use OAuth P1 Tokens
 - [X] PDO-4881 Use code sharing methods for Logger.lib.sh
+- [X] PDO-5995 Add p1as-observability to PCB: Cloudwatch Agent
 - [X] PDO-6116 Kustomize: Fix kustomizations to not be completely empty in order to support v5.1+
+- [X] PDO-7396 Integrate init-container to use perpetual license
+- [X] PDO-7425 Properly handle failures for cluster-state and profile-repo scripts
+- [X] PDO-7510 Create an "easy" way for BeOps users to get user credentials token OS/Argo
 - [X] PDO-7593 Create default ingress object to accept LDAPS traffic through Nginx Private
 - [X] PDO-7616 Update PingDirectory resource limits
+- [X] PDO-7763 Cost Savings: NGINX  (public and private): Reduce CPU and mem requests
 - [X] PDO-8109 Reconcile Grafana differences with p1as-observability
 - [X] PDO-8205 Enable consolidation for default nodepool and add multiple instance type
-- [X] PDO-8371 Remove helm-command.sh shim workaround
 - [X] PDO-8372 Upgrade Kustomize to 5.5.0
 - [X] PDO-8782 Figure out different setup for newrelic-tags-exporter for microservices
 - [X] PDO-8958 Global DNS: Implement Changes in PCB
 - [X] PDO-8981 Add self-service URL to env_vars
+- [X] PDO-9122 Revise the ISM and remove WARM node pools and its components
 
 ### 2.0.0
 
@@ -51,6 +62,7 @@ _Changes:_
 - Upgrade Kubectl to v1.30.4
 - Add p1as-self-service microservice
 - Remove Thanos resources and use Prometheus standalone
+- Update global values.yaml for newRelicLicenseKey variable substitution
 
 _Changes:_
 
@@ -85,6 +97,7 @@ _Changes:_
 - [X] PDO-8418 Create and add TLS roles to PingOne
 - [X] PDO-8788 Thanos: Disable in 2.0 Release
 - [X] PDO-8944 Exclude ping-cloud-dashboards repo from git branch reference replacement
+- [X] PDO-9213 Fix NewRelic license key value substitution in values.yaml
 
 ### 1.19.2.0
 
