@@ -53,14 +53,14 @@ patchesStrategicMerge:
       ${IRSA_PA_ANNOTATION_KEY_VALUE}
 
 ### Ping federate service account ###
-- |-
-  apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    name: pingfederate-serviceaccount
-    annotations:
-      purpose: service-account-for-ping-federate
-      ${IRSA_PF_ANNOTATION_KEY_VALUE}
+# - |-
+#   apiVersion: v1
+#   kind: ServiceAccount
+#   metadata:
+#     name: pingfederate-serviceaccount
+#     annotations:
+#       purpose: service-account-for-ping-federate
+#       ${IRSA_PF_ANNOTATION_KEY_VALUE}
 
 ### P14C Bootstrap service account ###
 - |-
