@@ -40,7 +40,7 @@ configMapGenerator:
 #   envs:
 #   - pingfederate/engine/env_vars
 
-# # Merge all env_vars into Pingfederate environment variables configmaps
+# Merge all env_vars into Pingfederate environment variables configmaps
 # - name: pingfederate-admin-environment-variables
 #   behavior: merge
 #   envs:
