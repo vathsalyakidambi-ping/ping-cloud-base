@@ -1,0 +1,52 @@
+{
+  "clientId": "refresh",
+  "enabled": true,
+  "redirectUris": [],
+  "grantTypes": [
+    "AUTHORIZATION_CODE",
+    "REFRESH_TOKEN"
+  ],
+  "name": "refresh",
+  "modificationDate": "2025-01-16T16:50:45.431Z",
+  "creationDate": "2025-01-16T16:50:45.434Z",
+  "refreshRolling": "SERVER_DEFAULT",
+  "refreshTokenRollingIntervalType": "SERVER_DEFAULT",
+  "persistentGrantExpirationType": "SERVER_DEFAULT",
+  "persistentGrantExpirationTime": 0,
+  "persistentGrantExpirationTimeUnit": "DAYS",
+  "persistentGrantIdleTimeoutType": "SERVER_DEFAULT",
+  "persistentGrantIdleTimeout": 0,
+  "persistentGrantIdleTimeoutTimeUnit": "DAYS",
+  "persistentGrantReuseType": "SERVER_DEFAULT",
+  "allowAuthenticationApiInit": true,
+  "enableCookielessAuthenticationApi": false,
+  "bypassApprovalPage": true,
+  "restrictScopes": true,
+  "requirePushedAuthorizationRequests": false,
+  "requireJwtSecuredAuthorizationResponseMode": false,
+  "restrictedScopes": [],
+  "exclusiveScopes": [],
+  "restrictedResponseTypes": [],
+  "authorizationDetailTypes": [],
+  "restrictToDefaultAccessTokenManager": false,
+  "validateUsingAllEligibleAtms": false,
+  "oidcPolicy": {
+    "grantAccessSessionRevocationApi": false,
+    "grantAccessSessionSessionManagementApi": false,
+    "logoutMode": "NONE",
+    "pingAccessLogoutCapable": false,
+    "pairwiseIdentifierUserType": false
+  },
+  "clientAuth": {
+    "type": "NONE",
+    "secondarySecrets": []
+  },
+  "deviceFlowSettingType": "SERVER_DEFAULT",
+  "requireProofKeyForCodeExchange": false,
+  "refreshTokenRollingGracePeriodType": "SERVER_DEFAULT",
+  "clientSecretRetentionPeriodType": "SERVER_DEFAULT",
+  "requireDpop": false,
+  "requireOfflineAccessScopeToIssueRefreshTokens": "SERVER_DEFAULT",
+  "offlineAccessRequireConsentPrompt": "SERVER_DEFAULT",
+  "requireSignedRequests": false
+}
