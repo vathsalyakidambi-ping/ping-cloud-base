@@ -64,7 +64,18 @@ global:
       # More info here: https://confluence.pingidentity.com/display/proserv/Enabling+X.509+Authentication+with+PingDirectory
       # pdTruststoreCertOne: certOneData
       # pdTruststoreCertTwo: certTwoData
-      
+
+      # Default Admin User Password for PingCentral
+      pcAdminUserPassword: MkZlZGVyYXRlTTByZQ==
+      # Default Admin User Password for PingAccess
+      paAdminUserPassword: MkZlZGVyYXRlTTByZQ==
+
+      # This secret sets pf.cluster.auth.pwd within profile-repo/pingfederate/instance/bin/run.properties.subst
+      # Set empty as the default, as not all customers may need.
+      pfClusterAuthPassword: ""
+
+      # Optional license key for PingFederate
+      # pingFederateLicense:    
   ########################################################
   # Multi-region parameters
   ########################################################
@@ -215,3 +226,52 @@ global:
   # pingcloud-p14c-bootstrap application settings
   p14cIntegration:
     image: public.ecr.aws/r2h3l6e4/pingcloud-services/p14c-integration/dev:v2.1-release-branch-latest
+  # newrelic tag-exporter application settings
+  newRelicTagsExporter:
+    imageTag: "v2.1.0"
+  # prometheus-json-exporter application settings
+  prometheusJsonExporter:
+    image: public.ecr.aws/r2h3l6e4/pingcloud-monitoring/prometheus-json-exporter/dev:v2.1-release-branch-latest
+  grpRadiusProxy:
+    image: public.ecr.aws/r2h3l6e4/pingcloud-services/grp-radiusproxy/dev:v2.1-release-branch-latest
+
+  # The cloud provider to deploy to
+  cloudProvider: "aws"
+  # The customer DNS zone to be appended to pingdirectory URLs. Should be replaced when deploying locally.
+  dnsZone: "ping-demo.com"
+  # Region-independent URL used for DNS failover routing
+  tenantDomain: "ping-demo.com"
+
+  # Customer-specific artifacts URL for region
+  artifactRepoUrl: "s3://artifacts-bucket"
+
+  # region is the AWS region name
+  region: "us-west-2"
+  regionNickname: "us-west-2"
+
+  # The IRSA role ARN to be used for the ping serviceAccount, for the customer environment
+  # Override this value manually to deploy the helm chart individually for development
+  irsaPingAnnotationKeyValue: ""
+
+  # The name of the tenant.  If provided, this value will be used for the cluster name and is case-sensitive
+  tenantName: "ping"
+
+  # FIXME: Add dynamic TENANT_DOMAIN to k8s-deploy-tools values.yaml.
+  pfAdminPublicHostname: "pingfederate-admin.ping-oasis.com"
+  pfClusterPublicHostname: "pingfederate-cluster.ping-oasis.com"
+  pdHttpPublicHostname: "pingdirectory.ping-oasis.com"
+  pdDelegatorPublicHostname: "pingdelegator.ping-oasis.com"
+  pfAdminApiPublicHostname: "pingfederate-admin-api.ping-oasis.com"
+  paAdminApiPublicHostname: "pingaccess-admin-api.ping-oasis.com"
+  pcAdminPrivateSiteHostname: "pingcentral.ping-oasis.com"
+  pdClusterPublicHostname: "pingdirectory-cluster.ping-oasis.com"
+  pfEnginePublicHostname: "pingfederate.ping-oasis.com"
+
+  pgoBackupBucketName: "ssm://cluster-name/pcpt/config/k8s-config/accounts/dev/pgo-bucket/uri"
+
+  # PingFederate Communication
+  pfPdBindPort: 1389
+  pfPdBindProtocol: "ldap"
+  pfPdBindUseSsl: false
+
+

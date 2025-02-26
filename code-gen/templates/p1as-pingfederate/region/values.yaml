@@ -1,0 +1,347 @@
+pingfederate:
+  podReaperEnabled: "enabled"
+  serverProfilePath: "profiles/pingfederate"
+  # Note, may can go away once we fix PDO-6879
+  kubectlVersion: "v1.30.4"
+  license:
+    # Only use if you want to provide your own SSM path to perpetual license
+    # The default is that automation will determine SSM path to retrieve product license
+    overrideProductLicense: ""
+
+# Application settings that is only for PingFederate Admin
+pingfederateAdmin:
+  pfLogLevel: "INFO"
+  verbose: false
+  # PingFederate Heap
+  pfMinHeap: "256m"
+  pfMaxHeap: "512m"
+  pfMinYgen: "128m"
+  pfMaxYgen: "256m"
+  # Individual files should be spelled out, globs are unreliable
+  k8sTailLogFiles: "/opt/out/instance/log/jvm-garbage-collection.log /opt/out/instance/log/server.log /opt/out/instance/log/init.log /opt/out/instance/log/admin.log /opt/out/instance/log/admin-event-detail.log /opt/out/instance/log/admin-api.log /opt/out/instance/log/runtime-api.log /opt/out/instance/log/transaction.log /opt/out/instance/log/audit.log /opt/out/instance/log/provisioner-audit.log /opt/out/instance/log/provisioner.log /opt/out/instance/log/request.log /opt/out/instance/log/request2.log"
+  # Restore Variables
+  restore:
+    # Choose desired backup to restore from S3. The default is latest.zip which is the most recent backup.
+    backupFileName: ""
+    # When deleting PingFederate Admin PVC.
+    # Automation will attempt to pull the latest.zip unless specified differently using 'backupFileName' variable.
+    # Set 'restoreBackup' to 'false' if you don't want to restore the latest backup from S3.
+    restoreBackup: true
+  # Control Ingress Resource for PingFederate Admin
+  ingress:
+    enableExternalIngress: false
+    ingressClassName: "nginx-public"
+  # Set container limits for the PingFederate Admin Statefulset
+  statefulSet:
+    lastUpdateReason: "NA"
+    pfJettyThreadsMin: ""
+    pfJettyThreadsMax: ""
+    replicas: "1"
+    resources:
+      limits:
+        memory: "4Gi"
+        cpu:  "1"
+      requests:
+        memory: "4Gi"
+        cpu: "1"
+  # Persistent volume size configuration for PingFederate Admin.
+  persistentVolume:
+    size: 20Gi
+    # Storage provisioner configuration for managing the persistent volume.
+    storageProvisioner: "ebs.csi.aws.com"
+    # File system type configuration for the persistent volume.
+    fsType: "ext4"
+    # Storage type configuration for the persistent volume.
+    storageType: "gp3"
+
+# Application settings that is only for PingFederate Engine
+pingfederateEngine:
+  pfLogLevel: "INFO"
+  verbose: false
+  pfMinHeap: "256m"
+  pfMaxHeap: "512m"
+  pfMinYgen: "128m"
+  pfMaxYgen: "256m"
+  # Individual files should be spelled out, globs are unreliable
+  k8sTailLogFiles: "/opt/out/instance/log/jvm-garbage-collection.log /opt/out/instance/log/server.log /opt/out/instance/log/init.log /opt/out/instance/log/admin.log /opt/out/instance/log/admin-event-detail.log /opt/out/instance/log/admin-api.log /opt/out/instance/log/runtime-api.log /opt/out/instance/log/transaction.log /opt/out/instance/log/audit.log /opt/out/instance/log/provisioner-audit.log /opt/out/instance/log/provisioner.log /opt/out/instance/log/request.log /opt/out/instance/log/request2.log"
+  # Set to true to skip liveness probe.
+  skipLiveness: false
+  # Control Ingress Resource for PingFederate Engine
+  ingress:
+    enableExternalIngress: false
+    ingressClassName: "nginx-public"
+  # Set container limits for the PingFederate Engine Statefulset
+  statefulSet:
+    lastUpdateReason: "NA"
+    pfJettyThreadsMin: ""
+    pfJettyThreadsMax: ""
+    replicas: "2"
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: 2
+      limits:
+        memory: "4Gi"
+        cpu: 2
+    podDisruptionBudget:
+      minAvailable: "30%"
+    hpa:
+      minReplicas: 2
+      maxReplicas: 2
+      averageUtilization: 70
+    pingcloudRadsecproxy:
+      resources:
+        requests:
+          memory: "200Mi"
+          cpu: "200m"
+        limits:
+          memory: "500Mi"
+          cpu: "400m"
+
+# Outbound provisioning settings
+provisioning:
+  # Failover grace period in seconds (default: 600)
+  pfProvisionerGracePeriod: 600
+  # Synchronization frequency in seconds (default: 60)
+  pfProvisionerSyncFreq: 60
+  statefulSet:
+    replicas: 3
+    minAvailable: 1
+    resources:
+      limits:
+        cpu: 2
+        memory: "4Gi"
+      requests:
+        cpu: 2
+        memory: "2Gi"
+  persistentVolume:
+    # Storage provisioner configuration for managing the persistent volume.
+    storageProvisioner: "ebs.csi.aws.com"
+    # File system type configuration for the persistent volume.
+    fsType: "ext4"
+    # Storage type configuration for the persistent volume.
+    storageType: "gp3"
+
+# Radius Proxy settings
+radiusProxy:
+  radiusProxyEnabled: false
+
+# Heartbeat Exporter settings
+heartbeatExporter:
+  statefulSet:
+    resources:
+      requests:
+        memory: "300Mi"
+        cpu: "100m"
+      limits:
+        memory: "300Mi"
+        cpu: "100m"
+
+# Delegated Admin settings
+delegatedAdmin:
+    enableDelAdmin: true
+
+# FIXME: Find a better elegant way to override dependencies
+# There will be a follow up MR.
+# This will be moved to k8s-deploy-tools but currently blocked until Gitlab Runners are back up.
+# Override PingDirectory Dependency Application Settings
+p1as-pingdirectory:
+  global:
+
+    ############################################################
+    # Secrets
+    ############################################################
+    # Expected format for each secret:
+    # NAMESPACE:
+    #   SECRETNAME:
+    #     KEY1: VALUE1
+    #     KEY2: VALUE2
+    # Note: NAMESPACE & SECRETNAME need to match exactly,
+    #   but secret keys should follow Helm's camelCase guidance
+    ############################################################
+
+    sealedSecrets: false
+    secrets:
+      ping-cloud:
+        sshIdKeyBase64: "${SSH_ID_KEY_BASE64}"
+        newRelicLicenseKey: "${NEW_RELIC_LICENSE_KEY_BASE64}"
+      newrelic:
+        newRelicLicenseKey: "${NEW_RELIC_LICENSE_KEY_BASE64}"
+
+    ########################################################
+    # Multi-region parameters
+    ########################################################
+    isMultiCluster: ${IS_MULTI_CLUSTER}
+
+    # primaryRegion is the primary AWS region name
+    # the primary region should have the same value for region and primaryRegion
+    primaryRegion: "${PRIMARY_REGION}"
+
+    # primaryDnsZone is the primary dns zone for customer for region
+    primaryDnsZone: "${TENANT_DOMAIN}"
+
+    # primaryTenantDomain is the primary domain suffix for customer for region
+    # the primary region should have the same value for tenantDomain and primaryTenantDomain
+    primaryTenantDomain: "${PRIMARY_TENANT_DOMAIN}"
+
+    # secondaryTenantDomains is an optional comma-separated list of the tenant domain suffixes of secondary regions used
+    # for PingFederate adaptive clustering using the JGroups DNS_PING discovery protocol:
+    #
+    #   - Do NOT include the primary tenant domain in the list
+    #   - Do NOT include the CDE prefix in the domain name
+    #
+    # For example, if the primary domain is "tuna.us1.ping-preview.cloud", then set it
+    # to "tuna.eu1.ping-preview.cloud,tuna.au1.ping-preview.cloud" to specify secondary
+    # domains in regions eu1 and au1.
+    #
+    # NOTES:
+    #   - Only used in multi-cluster environments. If provided, PF will be configured with DNS_PING.
+    #   - It is recommended that SECONDARY_TENANT_DOMAINS be set apriori, even before the
+    #     secondary regions are created to avoid pod rollouts. DNS_PING will simply ignore
+    #     unreachable domains. If it is not set beforehand, then all servers in the PF
+    #     cluster (admin and engines) must be re-rolled to pick up the change.
+    secondaryTenantDomains: "${SECONDARY_TENANT_DOMAINS}"
+
+    # globalTenantDomain is the region-independent URL used for DNS failover/routing
+    globalTenantDomain: "${GLOBAL_TENANT_DOMAIN}"
+
+    ########################################################
+    # S3 buckets
+    ########################################################
+    # pingArtifactRepoUrl is the ping-hosted common artifacts URL
+    pingArtifactRepoUrl: "${PING_ARTIFACT_REPO_URL}"
+
+    # logArchiveUrl is the customer-specific log URL for region
+    logArchiveUrl: "${LOG_ARCHIVE_URL}"
+
+    # backupUrl is the customer-specific backup URL for region
+    backupUrl: "${BACKUP_URL}"
+
+    ########################################################
+    # Miscellaneous ping-cloud variables
+    ########################################################
+    # pingCloudNamespace is the namespace where Ping apps are deployed
+    # TODO: hard coding this to "ping-cloud" until PDO-7221 fixes
+    pingCloudNamespace: "ping-cloud"
+
+    # k8sGitBranch is the ping-cloud-base git branch for base Kubernetes manifests
+    # for dev microservice deployments, let this come from the microservice repo
+    # if you would like to override this globally, you can set it here
+  #  k8sGitBranch: "${K8S_GIT_BRANCH}"
+
+    # ecrRegistryName is the name of the Docker image registry
+    ecrRegistryName: "public.ecr.aws/r2h3l6e4/dev"
+
+    # clusterName is the eks cluster name
+    clusterName: "${CLUSTER_NAME}"
+
+    # to fetch eks cluster name as per newrelic chart template
+    cluster: "${TENANT_NAME}_${ENV_TYPE}_${REGION}_k8s-cluster"
+
+    # serverProfileUrl is the git URL for the profile repo
+    serverProfileUrl: "${SERVER_PROFILE_URL}"
+
+    # serverProfileBranch is the git branch for the profile repo
+    serverProfileBranch: "${ENV_TYPE}"
+
+    # The image pull policy for all images
+    imagePullPolicy: "Always"
+
+    # Boolean determining if this is an isolated microservice or a full PCB deploy
+    # for dev microservice deployments, let this come from the microservice repo
+    # if you would like to override this globally, you can set it here
+  #  isMicroserviceDeploy: true
+
+    ########################################################
+    # Environment-specific variables
+    ########################################################
+    # environmentType is used by server profile hooks
+    environmentType: "${ENV_TYPE}"
+
+    # env is used by Kubernetes manifests
+    env: "${ENV_TYPE}"
+
+    # defaulting this to true for dev microservice deployments
+    isBelugaEnv: true
+
+    # The known-hosts file to trust the cluster state repo server for git/ssh cloning
+    # for dev microservice deployments, this variable was generated using `ssh-keyscan -H git-codecommit.us-west-2.amazonaws.com`
+    # so it should work for all CSG code-commit repos.
+    sshKnownHosts: "|1|vyBrTXXgQ/RwA+Dt6chX3jKabY0=|S7UBmP/EjbKtI7f1NdsTx4kBfzI= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqyQh/szYdP7ykDdwp8pWMgrFmuXU4mEf27Wzz6QcR/ZJsIRVCdslVjmt9RA1ljanAVPI8zjp/oI6NPICh8l638vRLt8lFbNMfMMfkzxiIXs0mLAuQ2XSbRglPDF4mAQ7C+oD/B01XXKWU4Vack37i0R9RMtkl3spFB8Hq7HJi4/wy87U7FMHfjHWYXr3GAOg1PfRyTAyHij0XXuBhxzz1vMoiI5DkgH8CKuKf+AmW5KHxKX3zPCoKe7nDw3/Re4ghYhc34ldOSZlQin/dIyT/GQy0ayRWGXc0KB2ijrDCxd4N4INBhdqCRDPwkxwqVRUToBFw6Q1zBdlVlK5ViFEV"
+
+    ########################################################
+    # DevOps License environment variables
+    ########################################################
+    pingIdentityDevopsUser: "ssm://pcpt/devops-license/user"
+    pingIdentityDevopsKey: "ssm://pcpt/devops-license/key"
+
+    ########################################################
+    # Shared Application Variables
+    ########################################################
+    # Define the contents for your descriptor.json file here, in yaml. An example is provided below for syntax.
+    # Also see the descriptor.json.readme file in p1as-pingdirectory/deploy/templates/config directory of the
+    # p1as-pingdirectory repo for more info
+    # descriptorFile: |-
+    #   us-west-2:
+    #     hostname: abc
+    #     replicas: 1
+    #   us-east-2:
+    #     hostname: def
+    #     replicas: 2
+    descriptorFile: ""
+    # The prefix of a SSM Param / Secret path that contains TLS config
+    customerTlsSsmPathPrefix: "${CUSTOMER_TLS_SSM_PATH_PREFIX}"
+
+    ########################################################
+    # Public Hostnames
+    ########################################################
+    pdClusterPublicHostname: "pingdirectory-cluster.${TENANT_DOMAIN}"
+    selfServicePublicHostname: "self-service-api.${TENANT_DOMAIN}"
+
+    #### FEATURE FLAGS ##################################################################################################
+    # Most are disabled by default
+    # Please follow runbook instructions for the given feature flag to enable/disable
+
+    # !!! Provisioning for PingFederate is not yet available for multi-region customers !!!
+    # Runbook: https://confluence.pingidentity.com/display/PingCloud/How+to+Enable+and+Configure+PingFederate+Provisioning
+    pfProvisioningEnabled: false
+
+    radiusProxyEnabled: false
+
+    external_ingress_enabled: false
+
+    # Runbook: https://pingidentity.atlassian.net/wiki/spaces/PDA/pages/427688292/How+to+Enable+and+Disable+Healthchecks+-+1.19.0
+    # for dev microservice deployments, let this come from the microservice repo
+    # if you would like to override this globally, you can set it here
+  #  healthchecksEnabled: false
+    #####################################################################################################################
+
+    ####################################################################################################################
+    # Customer region-specific parameters that are shared by multiple apps
+    #   For microservice deployments this is added here to the main values.yaml file
+    ####################################################################################################################
+    # region is the AWS region name
+    region: "${REGION}"
+    regionNickname: "${REGION_NICK_NAME}"
+
+    # The name of the tenant
+    tenantName: "${TENANT_NAME}"
+
+    # tenantDomain is the domain suffix for customer for region
+    tenantDomain: "${TENANT_DOMAIN}"
+
+    # dnsZone is the Customer-specific region DNS zone
+    dnsZone: "${TENANT_DOMAIN}"
+
+    # IRSA Ping IAM role annotation with ARN fetched from SSM
+    irsaPingAnnotationKeyValue: "${IRSA_PING_ANNOTATION_KEY_VALUE}"
+
+    # Customer-specific artifacts URL for region
+    artifactRepoUrl: "${ARTIFACT_REPO_URL}"
+
+  # pingdirectory application settings
+  pingdirectory:
+    monitorBucketUrl: "${PD_MONITOR_BUCKET_URL}"
+    statefulSet:
+      replicas: 1
+    irsaPdAnnotationKeyValue: "${IRSA_PD_ANNOTATION_KEY_VALUE}"
