@@ -199,9 +199,18 @@ global:
   ########################################################
   # Public Hostnames
   ########################################################
+  pfAdminApiPublicHostname: "pingfederate-admin-api.${PRIMARY_DNS_ZONE}"
+  paAdminApiPublicHostname: "pingaccess-admin-api.${PRIMARY_DNS_ZONE}"
+  pfAdminPublicHostname: "pingfederate-admin.${PRIMARY_DNS_ZONE}"
+  pcAdminPrivateSiteHostname: "pingcentral.${PRIMARY_DNS_ZONE}"
+
+  pfClusterPublicHostname: "pingfederate-cluster.${PRIMARY_DNS_ZONE}"
   pdClusterPublicHostname: "pingdirectory-cluster.${PRIMARY_DNS_ZONE}"
   selfServicePublicHostname: "self-service-api.${PRIMARY_DNS_ZONE}"
 
+  pdHttpPublicHostname: "pingdirectory.${DNS_ZONE}"
+  pdDelegatorPublicHostname: "pingdelegator.${DNS_ZONE}"
+  pfEnginePublicHostname: "pingfederate.${DNS_ZONE}"
 
   #### FEATURE FLAGS ##################################################################################################
   # Most are disabled by default
@@ -255,17 +264,6 @@ global:
 
   # The name of the tenant.  If provided, this value will be used for the cluster name and is case-sensitive
   tenantName: "ping"
-
-  # FIXME: Add dynamic TENANT_DOMAIN to k8s-deploy-tools values.yaml.
-  pfAdminPublicHostname: "pingfederate-admin.ping-oasis.com"
-  pfClusterPublicHostname: "pingfederate-cluster.ping-oasis.com"
-  pdHttpPublicHostname: "pingdirectory.ping-oasis.com"
-  pdDelegatorPublicHostname: "pingdelegator.ping-oasis.com"
-  pfAdminApiPublicHostname: "pingfederate-admin-api.ping-oasis.com"
-  paAdminApiPublicHostname: "pingaccess-admin-api.ping-oasis.com"
-  pcAdminPrivateSiteHostname: "pingcentral.ping-oasis.com"
-  pdClusterPublicHostname: "pingdirectory-cluster.ping-oasis.com"
-  pfEnginePublicHostname: "pingfederate.ping-oasis.com"
 
   pgoBackupBucketName: "ssm://cluster-name/pcpt/config/k8s-config/accounts/dev/pgo-bucket/uri"
 

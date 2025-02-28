@@ -1,7 +1,7 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
-namespace: ping-cloud
+namespace: ${PING_CLOUD_NAMESPACE}
 
 commonLabels:
   app: ping-cloud
@@ -15,7 +15,7 @@ helmCharts:
   - name: p1as-pingfederate
     additionalValuesFiles:
       - ../../values-files/base/values.yaml   # base values.yaml
-      - ../../values-files/us-west-2/values.yaml   # regional values.yaml
+      - ../../values-files/${REGION_NICK_NAME}/values.yaml   # regional values.yaml
       - values.yaml   # app specific values.yaml
     version: v2.1-pdo-8968-deploy-stage
     valuesInline:
