@@ -44,7 +44,6 @@ pingfederateAdmin:
   # Control Ingress Resource for PingFederate Admin
   ingress:
     enableExternalIngress: false
-    ingressClassName: "nginx-private"
 
   # Set container limits for the PingFederate Admin Statefulset
   statefulSet:
@@ -61,12 +60,6 @@ pingfederateAdmin:
   # Persistent volume size configuration for PingFederate Admin.
   persistentVolume:
     size: 20Gi
-    # Storage provisioner configuration for managing the persistent volume.
-    storageProvisioner: "ebs.csi.aws.com"
-    # File system type configuration for the persistent volume.
-    fsType: "ext4"
-    # Storage type configuration for the persistent volume.
-    storageType: "gp3"
 
 # Application settings that is only for PingFederate Engine
 pingfederateEngine:
@@ -142,11 +135,6 @@ provisioning:
   # Control the StorageClass settings of PostgresCluster.
   persistentVolume:
     # Storage provisioner configuration for managing the persistent volume.
-    storageProvisioner: "ebs.csi.aws.com"
-    # File system type configuration for the persistent volume.
-    fsType: "ext4"
-    # Storage type configuration for the persistent volume.
-    storageType: "gp3"
 
 # Periodic CronJob settings for backing up PingFederate Admin
 periodicBackupCronJob:
