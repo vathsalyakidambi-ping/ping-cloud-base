@@ -35,6 +35,10 @@ global:
       acmeCertKeystorePassword: MkZlZGVyYXRlTTByZQ==
       # Secret synced between DelegatedAdmin and PingDirectory
       daOauthTokenValidatorSecret: MkZlZGVyYXRlTTByZQ==
+      # Default Admin User Password for PingCentral
+      pcAdminUserPassword: MkZlZGVyYXRlTTByZQ==
+      # Default Admin User Password for PingAccess
+      paAdminUserPassword: MkZlZGVyYXRlTTByZQ==
       
       ###### PingDirectory Secrets #####
 
@@ -64,11 +68,6 @@ global:
       # More info here: https://confluence.pingidentity.com/display/proserv/Enabling+X.509+Authentication+with+PingDirectory
       # pdTruststoreCertOne: certOneData
       # pdTruststoreCertTwo: certTwoData
-
-      # Default Admin User Password for PingCentral
-      pcAdminUserPassword: MkZlZGVyYXRlTTByZQ==
-      # Default Admin User Password for PingAccess
-      paAdminUserPassword: MkZlZGVyYXRlTTByZQ==
 
       ###### PingFederate Secrets #####
 
@@ -202,7 +201,7 @@ global:
   pfPdBindPort: 1389
   pfPdBindProtocol: "ldap"
   pfPdBindUseSsl: false
-  
+
   ########################################################
   # Public Hostnames
   ########################################################
