@@ -17,8 +17,6 @@ pingfederateAdmin:
   pfMaxHeap: "512m"
   pfMinYgen: "128m"
   pfMaxYgen: "256m"
-  # Individual files should be spelled out, globs are unreliable
-  k8sTailLogFiles: "/opt/out/instance/log/jvm-garbage-collection.log /opt/out/instance/log/server.log /opt/out/instance/log/init.log /opt/out/instance/log/admin.log /opt/out/instance/log/admin-event-detail.log /opt/out/instance/log/admin-api.log /opt/out/instance/log/runtime-api.log /opt/out/instance/log/transaction.log /opt/out/instance/log/audit.log /opt/out/instance/log/provisioner-audit.log /opt/out/instance/log/provisioner.log /opt/out/instance/log/request.log /opt/out/instance/log/request2.log"
 
   # Restore Variables
   restore:
