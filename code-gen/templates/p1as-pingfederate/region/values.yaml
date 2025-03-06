@@ -2,9 +2,6 @@
 pingfederate:
   irsaAnnotationKeyValue: "${IRSA_PF_ANNOTATION_KEY_VALUE}"
   podReaperEnabled: "enabled"
-  serverProfilePath: "profiles/pingfederate"
-  # Note, may can go away once we fix PDO-6879
-  kubectlVersion: "v1.30.4"
 
   license:
     # Only use if you want to provide your own SSM path to perpetual license
