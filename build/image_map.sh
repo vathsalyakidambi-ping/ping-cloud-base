@@ -10,7 +10,6 @@
 
 export IMAGE_MAP="pingcloud-apps/pingaccess
    pingcloud-apps/pingaccess-was
-   # pingcloud-apps/pingfederate
    pingcloud-apps/pingdelegator
    pingcloud-apps/pingcentral
    pingcloud-apps/pingdatasync
