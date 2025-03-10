@@ -118,15 +118,14 @@ pingfederate:
 
   # Periodic CronJob settings for backing up PingFederate Admin
   periodicBackupCronJob:
-    statefulSet:
-      schedule: "30 * * * *"
-      resources:
-        limits:
-          memory: "50Mi"
-          cpu: "50m"
-        requests:
-          memory: "25Mi"
-          cpu: "25m"
+    schedule: "30 * * * *"
+    resources:
+      limits:
+        memory: "50Mi"
+        cpu: "50m"
+      requests:
+        memory: "25Mi"
+        cpu: "25m"
 
   # Radius Proxy settings
   radiusProxy:
