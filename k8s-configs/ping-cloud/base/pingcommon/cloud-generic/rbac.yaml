@@ -9,11 +9,11 @@ kind: ServiceAccount
 metadata:
   name: pingaccess-serviceaccount
 
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: pingfederate-serviceaccount
+# ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: pingfederate-serviceaccount
 
 ---
 
