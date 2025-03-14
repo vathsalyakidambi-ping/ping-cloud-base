@@ -186,6 +186,7 @@ global:
   #   us-east-2:
   #     hostname: def
   #     replicas: 2
+  # WARNING: You need to remove any trailing whitespace from all lines in this value, as well as any quotes
   descriptorFile: ""
   # PingDirectory base DN
   userBaseDn: "${USER_BASE_DN}"
@@ -196,6 +197,8 @@ global:
   userBaseDn_5: "${USER_BASE_DN_5}"
   # The prefix of a SSM Param / Secret path that contains TLS config
   customerTlsSsmPathPrefix: "${CUSTOMER_TLS_SSM_PATH_PREFIX}"
+  # The prefix of a SSM Param / Secret path that contains self-service configurations
+  selfServiceSsmPathPrefix : "${SELF_SERVICE_SSM_PATH_PREFIX}"
 
   # PingFederate Communication
   pfPdBindPort: 1389
