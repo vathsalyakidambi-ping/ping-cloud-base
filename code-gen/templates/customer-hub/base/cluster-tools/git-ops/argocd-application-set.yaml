@@ -106,11 +106,6 @@ spec:
           kind: Job
           jsonPointers:
             - /spec/ttlSecondsAfterFinished
-        - group: ""
-          kind: ConfigMap
-          namespace: ping-cloud
-          jsonPointers:
-            - /data
       syncPolicy:
         automated:
           prune: true
