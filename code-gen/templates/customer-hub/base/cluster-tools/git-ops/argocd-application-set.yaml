@@ -106,6 +106,6 @@ spec:
           kind: Job
           jsonPointers:
             - /spec/ttlSecondsAfterFinished
-      syncPolicy:
+      syncPolicy:https://grid-pingidentity.enterprise.slack.com/files/U0245HUE99B/F099SC7BH7D/pf-admin-upgrade.log?origin_team=E062P3BCAPL&origin_channel=Vall_threads
         automated:
           prune: true
