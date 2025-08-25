@@ -10,3 +10,5 @@ configMapGenerator:
   - name: test-restart-strategy
     literals:
       - RESTART_STRATEGY=""
+    options:
+      disableNameSuffixHash: true
