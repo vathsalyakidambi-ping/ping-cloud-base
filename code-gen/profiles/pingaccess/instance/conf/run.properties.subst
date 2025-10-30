@@ -457,3 +457,7 @@ pa.cluster.serverstate.replicationIntervalMilliseconds=1000
 #   Log4j 2 Settings
 #   ---------------------------
 log4j2.formatMsgNoLookups=true
+
+#   Hide Log Settings on UI
+#  
+display.log.settings=false
