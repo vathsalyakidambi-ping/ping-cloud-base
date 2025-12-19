@@ -53,3 +53,16 @@ patchesJson6902:
     - op: replace
       path: /metadata/annotations/external-dns.alpha.kubernetes.io~1hostname
       value: pingaccess-cluster.${DNS_ZONE}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pingaccess-admin
+  namespace: ping-cloud
+spec:
+  template:
+    spec:
+      containers:
+        - name: pingaccess-p1as-sso
+          $patch: delete
