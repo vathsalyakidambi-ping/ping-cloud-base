@@ -6,3 +6,16 @@ kind: ConfigMap
 metadata:
   name: custom-environment-variables
   namespace: ping-cloud
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pingaccess-admin
+  namespace: ping-cloud
+spec:
+  template:
+    spec:
+      Containers:
+        - name: pingaccess-p1as-sso
+          $patch: delete
